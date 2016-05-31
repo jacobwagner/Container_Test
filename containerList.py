@@ -2,8 +2,9 @@ import yaml
 import random
 import lxc
 from container import Container
-from containerState import ContainerState
-from containerType import ContainerType
+from dataContract.containerState import ContainerState
+from dataContract.containerType import ContainerType
+from cmd.lxcCommandWrap import LXC
 
 containerList = []
 
@@ -15,9 +16,11 @@ def getContainerInfo():
 		containerList.append(Container(key, value['container_address'], lxc.Container(key).state))
 
 
-def printContainerInfo():
+def printContainerInfo(containerName=None):
 	for i in containerList:
-		print(i.getName() + " : " + i.getAddress() + " : " + i.getState())
+		if containerName and containerName == i.getName():
+			i.setState(lxc.Container(containerName).state)
+			print(i.getName() + " : " + i.getAddress() + " : " + i.getState())
 
 def getRandomContainer(container_type):
 	if len(container_type) == 0 : return ''
@@ -27,21 +30,18 @@ def getRandomContainer(container_type):
 		if container_type in name:
 			resultList.append(name)
 	index = random.randrange(0, len(resultList))
-	print(index)
 	return resultList[index]
 
 
-
-
-
-
-
-
-
-
-
-
+l = LXC()
 getContainerInfo()
-print(getRandomContainer(ContainerType.Rabbit_Mq))
-print(getRandomContainer(ContainerType.Rabbit_Mq))
-print(getRandomContainer(ContainerType.Rabbit_Mq))
+name = getRandomContainer(ContainerType.Rabbit_Mq)
+printContainerInfo(name)
+l.freeze(name)
+printContainerInfo(name)
+l.unfreeze(name)
+printContainerInfo(name)
+l.stop(name)
+printContainerInfo(name)
+l.start(name)
+printContainerInfo(name)

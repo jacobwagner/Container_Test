@@ -1,4 +1,4 @@
-from containerState import ContainerState
+from dataContract.containerState import ContainerState
 
 class Container:
 	container_name = ''
@@ -19,5 +19,9 @@ class Container:
 
 	def getState(self):
 		return self.container_state
+
+	def setState(self, state):
+		self.container_state = state
+		
 
 
