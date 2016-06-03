@@ -1,5 +1,6 @@
 class ServiceStatus:
 	Start = 'start'
+	Stop = 'stop'
 	Restart = 'restart'
 	Reload = 'reload'
 	Force_reload = 'force-reload'

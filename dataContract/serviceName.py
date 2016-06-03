@@ -3,4 +3,5 @@ class ServiceName:
 	RabbitMQ_Server = 'rabbitmq-server'
 	Logstash_Web = 'logstash-web'
 	Logstash = 'logstash'
+	Memcached = 'memcached'
 
