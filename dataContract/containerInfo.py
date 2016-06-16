@@ -39,3 +39,5 @@ class ContainerInfo:
 				resultList.append([name, container.getAddress(), container.getState()])
 		index = random.randrange(0, len(resultList))
 		return resultList[index]
+	def getAllContainerList(self):
+		return self.containerList
