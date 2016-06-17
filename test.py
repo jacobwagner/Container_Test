@@ -10,36 +10,37 @@ import sys
 
 
 containerInfo = ContainerInfo()
-l = LXC()
-
-def getName():
-	name, ip, status  = containerInfo.getRandomContainer("nova")
-	return name
-
+#l = LXC()
 #
-#sc = Service()
-#sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
-#sc.runServiceCommand(ip, ServiceName.Memcached, ServiceStatus.Stop)
-#sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
-#sc.runServiceCommand(ip, ServiceName.Memcached, ServiceStatus.Start)
-#sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
+#def getName():
+#	name, ip, status  = containerInfo.getRandomContainer("nova")
+#	return name
 #
+##
+##sc = Service()
+##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
+##sc.runServiceCommand(ip, ServiceName.Memcached, ServiceStatus.Stop)
+##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
+##sc.runServiceCommand(ip, ServiceName.Memcached, ServiceStatus.Start)
+##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
+##
+##
+##
 #
-#
-
-stoplist = []
-startlist = []
+#stoplist = []
+#startlist = []
 containerList = containerInfo.getAllContainerList()
 for i in containerList:
-	if i.getState() == "RUNNING":
-		startlist.append(i.getName())
-	elif i.getState() == "STOPPED":
-		stoplist.append(i.getName())
-		l.start(i.getName())
-	
-		
-
-
+	print i.getName()
+#	if i.getState() == "RUNNING":
+#		startlist.append(i.getName())
+#	elif i.getState() == "STOPPED":
+#		stoplist.append(i.getName())
+#		l.start(i.getName())
+#	
+#		
+#
+#
 
 #while 1:
 #	try:
@@ -74,7 +75,6 @@ for i in containerList:
 #	time.sleep(30)
 	
 #containerInfo.printContainerInfo(name)
-print name
 #l.freeze(name)
 #containerInfo.printContainerInfo(name)
 #print("after")

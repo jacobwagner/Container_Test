@@ -1,5 +1,6 @@
 import yaml
 import random
+import paramiko
 import lxc
 from dataContract.container import Container
 from dataContract.containerState import ContainerState
@@ -10,8 +11,12 @@ class ContainerInfo:
 	inventory = '/etc/openstack_deploy/openstack_inventory.json'
 
 	def __init__(self):
-		with open(self.inventory) as data_file:    
-			data = yaml.safe_load(data_file)
+		ssh = paramiko.SSHClient()
+		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+		ssh.connect('172.29.236.100')
+		stdin, stdout, stderr = ssh.exec_command('cat ' + self.inventory)
+
+		data = yaml.safe_load(stdout.read())
 	
 		if data and data['_meta'] and data['_meta']['hostvars']:
 			try:
@@ -41,3 +46,4 @@ class ContainerInfo:
 		return resultList[index]
 	def getAllContainerList(self):
 		return self.containerList
+
