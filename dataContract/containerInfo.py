@@ -11,20 +11,17 @@ class ContainerInfo:
 	inventory = '/etc/openstack_deploy/openstack_inventory.json'
 
 	def __init__(self):
-		ssh = paramiko.SSHClient()
-		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		ssh.connect('172.29.236.100')
-		stdin, stdout, stderr = ssh.exec_command('cat ' + self.inventory)
-
-		data = yaml.safe_load(stdout.read())
+		with open(self.inventory) as data_file:    
+			data = yaml.safe_load(data_file)
 	
-		if data and data['_meta'] and data['_meta']['hostvars']:
-			try:
-				for key, value in data['_meta']['hostvars'].iteritems():
-					self.containerList.append(Container(key, value['container_address'], lxc.Container(key).state))
-			except:
-				print("some error")
-				raise
+			if data and data['_meta'] and data['_meta']['hostvars']:
+				try:
+					for key, value in data['_meta']['hostvars'].iteritems():
+						if value['container_address'] != "172.29.236.100":
+							self.containerList.append(Container(key, value['container_address'], lxc.Container(key).state))
+				except:
+					print("parse inventory error")
+					raise
 	
 	def printContainerInfo(self, containerName=None):
 		if not containerName:
@@ -44,6 +41,7 @@ class ContainerInfo:
 				resultList.append([name, container.getAddress(), container.getState()])
 		index = random.randrange(0, len(resultList))
 		return resultList[index]
+
 	def getAllContainerList(self):
 		return self.containerList
 

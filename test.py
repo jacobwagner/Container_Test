@@ -9,80 +9,64 @@ import random
 import sys
 
 
-containerInfo = ContainerInfo()
-#l = LXC()
-#
-#def getName():
-#	name, ip, status  = containerInfo.getRandomContainer("nova")
-#	return name
-#
-##
 ##sc = Service()
 ##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
 ##sc.runServiceCommand(ip, ServiceName.Memcached, ServiceStatus.Stop)
 ##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
 ##sc.runServiceCommand(ip, ServiceName.Memcached, ServiceStatus.Start)
 ##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
-##
-##
-##
-#
-#stoplist = []
-#startlist = []
-containerList = containerInfo.getAllContainerList()
-for i in containerList:
-	print i.getName()
-#	if i.getState() == "RUNNING":
-#		startlist.append(i.getName())
-#	elif i.getState() == "STOPPED":
-#		stoplist.append(i.getName())
-#		l.start(i.getName())
-#	
-#		
-#
-#
 
-#while 1:
-#	try:
-#		name = getName()
-#		print "Random Container Name: " + name
-#		ran = random.randint(0,2)
-#		print "Random number : " + str(ran)
-#		if ran == 1:
-#			if len(startlist) == 0:
-#				pass	
-#			else:
-#				index = random.randint(0,len(startlist))
-#				a = startlist[index]
-#				stoplist.append(a)
-#				startlist.remove(a)
-#				l.stop(a)
-#				print "stop : " + a
-#		else:
-#			if len(stoplist) == 0:
-#				pass
-#			else:
-#				index = random.randint(0,len(stoplist))
-#				a = stoplist[index]
-#				stoplist.remove(a)
-#				startlist.append(a)	
-#				l.start(a)
-#				print "start : " + a
-#	except KeyboardInterrupt:
-#		sys.exit(0)
-#	except:
-#		continue
-#	time.sleep(30)
-	
-#containerInfo.printContainerInfo(name)
-#l.freeze(name)
-#containerInfo.printContainerInfo(name)
-#print("after")
-#
-#
-#l.unfreeze(name)
-#containerInfo.printContainerInfo(name)
-#l.stop(name)
-#containerInfo.printContainerInfo(name)
-#l.start(name)
-#containerInfo.printContainerInfo(name)
+containerInfo = ContainerInfo()
+
+def generateList():
+	try:
+		stopList = []
+		runningList = []
+		containerList = containerInfo.getAllContainerList()
+		for i in containerList:
+			if i.getState() == "RUNNING":
+				runningList.append(i.getName())
+			elif i.getState() == "STOPPED":
+				stopList.append(i.getName())
+		return runningList, stopList
+	except:
+		print "generateList error"
+		return [], []
+		
+def randomTest(minimumTime, MaximumTime):
+	l = LXC()
+	while 1:
+		try:
+			runningList, stopList = generateList()
+			ran = random.randint(0, 1)
+			#try get one randome container from running list then stop it
+			if ran == 1:
+				index = getRandomInt(len(runningList))
+				if index != -1:
+					print "about to stop: " + runningList[index] 
+					l.stop(runningList[index])
+				else:
+					print "doing nothing"
+			else:
+				index = getRandomInt(len(stopList))
+				if index != -1:
+					print "about to start: " + runningList[index] 
+					l.start(stopList[index])
+				else:
+					print "doing nothing"
+			t = getRandomInt(MaximumTime-minimumTime)+minimumTime
+			print 'Sleep for %s seconds' %  str(t)
+			time.sleep(t)
+		except KeyboardInterrupt:
+			sys.exit(0)
+		except:
+			print "shit happened"
+			sys.exit(0)
+
+def getRandomInt(num):
+	if num > 0:
+		return random.randint(0,num-1)
+	else:
+		return -1 
+
+randomTest(30, 50)
