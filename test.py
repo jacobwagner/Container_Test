@@ -37,6 +37,7 @@ def generateList():
 		
 def randomTest(minimumTime, MaximumTime):
 	logger.info("Starting chaos...")
+	logger.info(time.ctime())
 	l = LXC()
 	while 1:
 		try:
@@ -45,6 +46,8 @@ def randomTest(minimumTime, MaximumTime):
 			t = getRandomInt(MaximumTime-minimumTime)+minimumTime
 			#try get one randome container from running list then stop it
 			if ran == 1:
+				if len(stopList) > 10:
+					continue
 				index = getRandomInt(len(runningList))
 				if index != -1:
 					logger.info("about to stop: " + runningList[index])
@@ -54,7 +57,7 @@ def randomTest(minimumTime, MaximumTime):
 			else:
 				index = getRandomInt(len(stopList))
 				if index != -1:
-					logger.info("about to start: " + runningList[index])
+					logger.info("about to start: " + stopList[index])
 					l.start(stopList[index])
 				else:
 					logger.info("Doing nothing for the next %s seconds" % str(t))
@@ -62,9 +65,11 @@ def randomTest(minimumTime, MaximumTime):
 		except KeyboardInterrupt:
 			logger.info("Stoping chaos...")
 			sys.exit(0)
-		except:
-			print "shit happened"
-			sys.exit(0)
+		except Exception as inst:
+			logger.info(type(inst))     # the exception instance
+			logger.info(inst.args)      # arguments stored in .args
+			logger.info(inst)   
+			logger.info(time.ctime())
 
 def getRandomInt(num):
 	if num > 0:
@@ -79,4 +84,4 @@ def countDown(t):
 			sys.stdout.flush()
 			time.sleep(1)	
 
-randomTest(5, 10)
+randomTest(20, 40)
