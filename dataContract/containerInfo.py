@@ -9,6 +9,7 @@ from dataContract.containerType import ContainerType
 class ContainerInfo:
 	containerList = []
 	inventory = '/etc/openstack_deploy/openstack_inventory.json'
+	prefix = ''
 
 	def __init__(self):
 		with open(self.inventory) as data_file:    
@@ -19,6 +20,8 @@ class ContainerInfo:
 					for key, value in data['_meta']['hostvars'].iteritems():
 						if value['container_address'] != "172.29.236.100":
 							self.containerList.append(Container(key, value['container_address'], lxc.Container(key).state))
+						else:
+							self.prefix = key
 				except:
 					print("parse inventory error")
 					raise
@@ -44,4 +47,7 @@ class ContainerInfo:
 
 	def getAllContainerList(self):
 		return self.containerList
+		
+	def getContainerPrefix(self):
+		return self.prefix
 
