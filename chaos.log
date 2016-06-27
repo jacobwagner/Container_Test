@@ -1,306 +1,90 @@
-INFO:ContainerControl:Starting chaos...
-INFO:ContainerControl:Thu Jun 23 20:22:57 2016
-INFO:ContainerControl:about to stop: xin-rcb-test-1_nova_console_container-2aac4126
-INFO:ContainerControl:Sleep for 21 seconds
-INFO:ContainerControl:Sleep for 20 seconds
-INFO:ContainerControl:Sleep for 19 seconds
-INFO:ContainerControl:Sleep for 18 seconds
-INFO:ContainerControl:Sleep for 17 seconds
-INFO:ContainerControl:Sleep for 16 seconds
-INFO:ContainerControl:Sleep for 15 seconds
-INFO:ContainerControl:Sleep for 14 seconds
-INFO:ContainerControl:Sleep for 13 seconds
-INFO:ContainerControl:Sleep for 12 seconds
-INFO:ContainerControl:Sleep for 11 seconds
-INFO:ContainerControl:Sleep for 10 seconds
-INFO:ContainerControl:Sleep for 9 seconds
-INFO:ContainerControl:Sleep for 8 seconds
-INFO:ContainerControl:Sleep for 7 seconds
-INFO:ContainerControl:Sleep for 6 seconds
-INFO:ContainerControl:Sleep for 5 seconds
-INFO:ContainerControl:Sleep for 4 seconds
-INFO:ContainerControl:Sleep for 3 seconds
-INFO:ContainerControl:Sleep for 2 seconds
-INFO:ContainerControl:Sleep for 1 seconds
-INFO:ContainerControl:about to stop: xin-rcb-test-1_nova_conductor_container-e9872357
-INFO:ContainerControl:Sleep for 19 seconds
-INFO:ContainerControl:Sleep for 18 seconds
-INFO:ContainerControl:Sleep for 17 seconds
-INFO:ContainerControl:Sleep for 16 seconds
-INFO:ContainerControl:Sleep for 15 seconds
-INFO:ContainerControl:Sleep for 14 seconds
-INFO:ContainerControl:Sleep for 13 seconds
-INFO:ContainerControl:Sleep for 12 seconds
-INFO:ContainerControl:Sleep for 11 seconds
-INFO:ContainerControl:Sleep for 10 seconds
-INFO:ContainerControl:Sleep for 9 seconds
-INFO:ContainerControl:Sleep for 8 seconds
-INFO:ContainerControl:Sleep for 7 seconds
-INFO:ContainerControl:Sleep for 6 seconds
-INFO:ContainerControl:Sleep for 5 seconds
-INFO:ContainerControl:Sleep for 4 seconds
-INFO:ContainerControl:Sleep for 3 seconds
-INFO:ContainerControl:Sleep for 2 seconds
-INFO:ContainerControl:Sleep for 1 seconds
-INFO:ContainerControl:about to start: xin-rcb-test-1_nova_conductor_container-e9872357
-INFO:ContainerControl:Sleep for 26 seconds
-INFO:ContainerControl:Sleep for 25 seconds
-INFO:ContainerControl:Sleep for 24 seconds
-INFO:ContainerControl:Sleep for 23 seconds
-INFO:ContainerControl:Sleep for 22 seconds
-INFO:ContainerControl:Sleep for 21 seconds
-INFO:ContainerControl:Sleep for 20 seconds
-INFO:ContainerControl:Sleep for 19 seconds
-INFO:ContainerControl:Sleep for 18 seconds
-INFO:ContainerControl:Sleep for 17 seconds
-INFO:ContainerControl:Sleep for 16 seconds
-INFO:ContainerControl:Sleep for 15 seconds
-INFO:ContainerControl:Sleep for 14 seconds
-INFO:ContainerControl:Sleep for 13 seconds
-INFO:ContainerControl:Sleep for 12 seconds
-INFO:ContainerControl:Sleep for 11 seconds
-INFO:ContainerControl:Sleep for 10 seconds
-INFO:ContainerControl:Sleep for 9 seconds
-INFO:ContainerControl:Sleep for 8 seconds
-INFO:ContainerControl:Sleep for 7 seconds
-INFO:ContainerControl:Sleep for 6 seconds
-INFO:ContainerControl:Sleep for 5 seconds
-INFO:ContainerControl:Sleep for 4 seconds
-INFO:ContainerControl:Sleep for 3 seconds
-INFO:ContainerControl:Sleep for 2 seconds
-INFO:ContainerControl:Sleep for 1 seconds
-INFO:ContainerControl:about to stop: xin-rcb-test-1_horizon_container-c920c819
-INFO:ContainerControl:Sleep for 38 seconds
-INFO:ContainerControl:Sleep for 37 seconds
-INFO:ContainerControl:Sleep for 36 seconds
-INFO:ContainerControl:Sleep for 35 seconds
-INFO:ContainerControl:Sleep for 34 seconds
-INFO:ContainerControl:Sleep for 33 seconds
-INFO:ContainerControl:Sleep for 32 seconds
-INFO:ContainerControl:Sleep for 31 seconds
-INFO:ContainerControl:Sleep for 30 seconds
-INFO:ContainerControl:Sleep for 29 seconds
-INFO:ContainerControl:Sleep for 28 seconds
-INFO:ContainerControl:Sleep for 27 seconds
-INFO:ContainerControl:Sleep for 26 seconds
-INFO:ContainerControl:Sleep for 25 seconds
-INFO:ContainerControl:Sleep for 24 seconds
-INFO:ContainerControl:Sleep for 23 seconds
-INFO:ContainerControl:Sleep for 22 seconds
-INFO:ContainerControl:Sleep for 21 seconds
-INFO:ContainerControl:Sleep for 20 seconds
-INFO:ContainerControl:Sleep for 19 seconds
-INFO:ContainerControl:Sleep for 18 seconds
-INFO:ContainerControl:Sleep for 17 seconds
-INFO:ContainerControl:Sleep for 16 seconds
-INFO:ContainerControl:Sleep for 15 seconds
-INFO:ContainerControl:Sleep for 14 seconds
-INFO:ContainerControl:Sleep for 13 seconds
-INFO:ContainerControl:Sleep for 12 seconds
-INFO:ContainerControl:Sleep for 11 seconds
-INFO:ContainerControl:Sleep for 10 seconds
-INFO:ContainerControl:Sleep for 9 seconds
-INFO:ContainerControl:Sleep for 8 seconds
-INFO:ContainerControl:Sleep for 7 seconds
-INFO:ContainerControl:Sleep for 6 seconds
-INFO:ContainerControl:Sleep for 5 seconds
-INFO:ContainerControl:Sleep for 4 seconds
-INFO:ContainerControl:Sleep for 3 seconds
-INFO:ContainerControl:Sleep for 2 seconds
-INFO:ContainerControl:Sleep for 1 seconds
-INFO:ContainerControl:about to start: xin-rcb-test-1_rabbit_mq_container-606f833e
-INFO:ContainerControl:Sleep for 36 seconds
-INFO:ContainerControl:Sleep for 35 seconds
-INFO:ContainerControl:Sleep for 34 seconds
-INFO:ContainerControl:Sleep for 33 seconds
-INFO:ContainerControl:Sleep for 32 seconds
-INFO:ContainerControl:Sleep for 31 seconds
-INFO:ContainerControl:Sleep for 30 seconds
-INFO:ContainerControl:Sleep for 29 seconds
-INFO:ContainerControl:Sleep for 28 seconds
-INFO:ContainerControl:Sleep for 27 seconds
-INFO:ContainerControl:Sleep for 26 seconds
-INFO:ContainerControl:Sleep for 25 seconds
-INFO:ContainerControl:Sleep for 24 seconds
-INFO:ContainerControl:Sleep for 23 seconds
-INFO:ContainerControl:Sleep for 22 seconds
-INFO:ContainerControl:Sleep for 21 seconds
-INFO:ContainerControl:Sleep for 20 seconds
-INFO:ContainerControl:Sleep for 19 seconds
-INFO:ContainerControl:Sleep for 18 seconds
-INFO:ContainerControl:Sleep for 17 seconds
-INFO:ContainerControl:Sleep for 16 seconds
-INFO:ContainerControl:Sleep for 15 seconds
-INFO:ContainerControl:Sleep for 14 seconds
-INFO:ContainerControl:Sleep for 13 seconds
-INFO:ContainerControl:Sleep for 12 seconds
-INFO:ContainerControl:Sleep for 11 seconds
-INFO:ContainerControl:Sleep for 10 seconds
-INFO:ContainerControl:Sleep for 9 seconds
-INFO:ContainerControl:Sleep for 8 seconds
-INFO:ContainerControl:Sleep for 7 seconds
-INFO:ContainerControl:Sleep for 6 seconds
-INFO:ContainerControl:Sleep for 5 seconds
-INFO:ContainerControl:Sleep for 4 seconds
-INFO:ContainerControl:Sleep for 3 seconds
-INFO:ContainerControl:Sleep for 2 seconds
-INFO:ContainerControl:Sleep for 1 seconds
-INFO:ContainerControl:about to start: xin-rcb-test-1_keystone_container-6e34ba0a
-INFO:ContainerControl:Sleep for 23 seconds
-INFO:ContainerControl:Sleep for 22 seconds
-INFO:ContainerControl:Sleep for 21 seconds
-INFO:ContainerControl:Sleep for 20 seconds
-INFO:ContainerControl:Sleep for 19 seconds
-INFO:ContainerControl:Sleep for 18 seconds
-INFO:ContainerControl:Sleep for 17 seconds
-INFO:ContainerControl:Sleep for 16 seconds
-INFO:ContainerControl:Sleep for 15 seconds
-INFO:ContainerControl:Sleep for 14 seconds
-INFO:ContainerControl:Sleep for 13 seconds
-INFO:ContainerControl:Sleep for 12 seconds
-INFO:ContainerControl:Sleep for 11 seconds
-INFO:ContainerControl:Sleep for 10 seconds
-INFO:ContainerControl:Sleep for 9 seconds
-INFO:ContainerControl:Sleep for 8 seconds
-INFO:ContainerControl:Sleep for 7 seconds
-INFO:ContainerControl:Sleep for 6 seconds
-INFO:ContainerControl:Sleep for 5 seconds
-INFO:ContainerControl:Sleep for 4 seconds
-INFO:ContainerControl:Sleep for 3 seconds
-INFO:ContainerControl:Sleep for 2 seconds
-INFO:ContainerControl:Sleep for 1 seconds
-INFO:ContainerControl:about to stop: xin-rcb-test-1_nova_api_metadata_container-9b6c0cbe
-INFO:ContainerControl:Sleep for 26 seconds
-INFO:ContainerControl:Sleep for 25 seconds
-INFO:ContainerControl:Sleep for 24 seconds
-INFO:ContainerControl:Sleep for 23 seconds
-INFO:ContainerControl:Sleep for 22 seconds
-INFO:ContainerControl:Sleep for 21 seconds
-INFO:ContainerControl:Sleep for 20 seconds
-INFO:ContainerControl:Sleep for 19 seconds
-INFO:ContainerControl:Sleep for 18 seconds
-INFO:ContainerControl:Sleep for 17 seconds
-INFO:ContainerControl:Sleep for 16 seconds
-INFO:ContainerControl:Sleep for 15 seconds
-INFO:ContainerControl:Sleep for 14 seconds
-INFO:ContainerControl:Sleep for 13 seconds
-INFO:ContainerControl:Sleep for 12 seconds
-INFO:ContainerControl:Sleep for 11 seconds
-INFO:ContainerControl:Sleep for 10 seconds
-INFO:ContainerControl:Sleep for 9 seconds
-INFO:ContainerControl:Sleep for 8 seconds
-INFO:ContainerControl:Sleep for 7 seconds
-INFO:ContainerControl:Sleep for 6 seconds
-INFO:ContainerControl:Sleep for 5 seconds
-INFO:ContainerControl:Sleep for 4 seconds
-INFO:ContainerControl:Sleep for 3 seconds
-INFO:ContainerControl:Sleep for 2 seconds
-INFO:ContainerControl:Sleep for 1 seconds
-INFO:ContainerControl:about to stop: xin-rcb-test-1_rabbit_mq_container-606f833e
-INFO:ContainerControl:Sleep for 36 seconds
-INFO:ContainerControl:Sleep for 35 seconds
-INFO:ContainerControl:Sleep for 34 seconds
-INFO:ContainerControl:Sleep for 33 seconds
-INFO:ContainerControl:Sleep for 32 seconds
-INFO:ContainerControl:Sleep for 31 seconds
-INFO:ContainerControl:Sleep for 30 seconds
-INFO:ContainerControl:Sleep for 29 seconds
-INFO:ContainerControl:Sleep for 28 seconds
-INFO:ContainerControl:Sleep for 27 seconds
-INFO:ContainerControl:Sleep for 26 seconds
-INFO:ContainerControl:Sleep for 25 seconds
-INFO:ContainerControl:Sleep for 24 seconds
-INFO:ContainerControl:Sleep for 23 seconds
-INFO:ContainerControl:Sleep for 22 seconds
-INFO:ContainerControl:Sleep for 21 seconds
-INFO:ContainerControl:Sleep for 20 seconds
-INFO:ContainerControl:Sleep for 19 seconds
-INFO:ContainerControl:Sleep for 18 seconds
-INFO:ContainerControl:Sleep for 17 seconds
-INFO:ContainerControl:Sleep for 16 seconds
-INFO:ContainerControl:Sleep for 15 seconds
-INFO:ContainerControl:Sleep for 14 seconds
-INFO:ContainerControl:Sleep for 13 seconds
-INFO:ContainerControl:Sleep for 12 seconds
-INFO:ContainerControl:Sleep for 11 seconds
-INFO:ContainerControl:Sleep for 10 seconds
-INFO:ContainerControl:Sleep for 9 seconds
-INFO:ContainerControl:Sleep for 8 seconds
-INFO:ContainerControl:Sleep for 7 seconds
-INFO:ContainerControl:Sleep for 6 seconds
-INFO:ContainerControl:Sleep for 5 seconds
-INFO:ContainerControl:Sleep for 4 seconds
-INFO:ContainerControl:Sleep for 3 seconds
-INFO:ContainerControl:Sleep for 2 seconds
-INFO:ContainerControl:Sleep for 1 seconds
-INFO:ContainerControl:about to start: xin-rcb-test-1_nova_scheduler_container-0214d3fd
-INFO:ContainerControl:Sleep for 35 seconds
-INFO:ContainerControl:Sleep for 34 seconds
-INFO:ContainerControl:Sleep for 33 seconds
-INFO:ContainerControl:Sleep for 32 seconds
-INFO:ContainerControl:Sleep for 31 seconds
-INFO:ContainerControl:Sleep for 30 seconds
-INFO:ContainerControl:Sleep for 29 seconds
-INFO:ContainerControl:Sleep for 28 seconds
-INFO:ContainerControl:Sleep for 27 seconds
-INFO:ContainerControl:Sleep for 26 seconds
-INFO:ContainerControl:Sleep for 25 seconds
-INFO:ContainerControl:Sleep for 24 seconds
-INFO:ContainerControl:Sleep for 23 seconds
-INFO:ContainerControl:Sleep for 22 seconds
-INFO:ContainerControl:Sleep for 21 seconds
-INFO:ContainerControl:Sleep for 20 seconds
-INFO:ContainerControl:Sleep for 19 seconds
-INFO:ContainerControl:Sleep for 18 seconds
-INFO:ContainerControl:Sleep for 17 seconds
-INFO:ContainerControl:Sleep for 16 seconds
-INFO:ContainerControl:Sleep for 15 seconds
-INFO:ContainerControl:Sleep for 14 seconds
-INFO:ContainerControl:Sleep for 13 seconds
-INFO:ContainerControl:Sleep for 12 seconds
-INFO:ContainerControl:Sleep for 11 seconds
-INFO:ContainerControl:Sleep for 10 seconds
-INFO:ContainerControl:Sleep for 9 seconds
-INFO:ContainerControl:Sleep for 8 seconds
-INFO:ContainerControl:Sleep for 7 seconds
-INFO:ContainerControl:Sleep for 6 seconds
-INFO:ContainerControl:Sleep for 5 seconds
-INFO:ContainerControl:Sleep for 4 seconds
-INFO:ContainerControl:Sleep for 3 seconds
-INFO:ContainerControl:Sleep for 2 seconds
-INFO:ContainerControl:Sleep for 1 seconds
-INFO:ContainerControl:about to stop: xin-rcb-test-1_galera_container-78ea9eed
-INFO:ContainerControl:Sleep for 19 seconds
-INFO:ContainerControl:Sleep for 18 seconds
-INFO:ContainerControl:Sleep for 17 seconds
-INFO:ContainerControl:Sleep for 16 seconds
-INFO:ContainerControl:Sleep for 15 seconds
-INFO:ContainerControl:Sleep for 14 seconds
-INFO:ContainerControl:Sleep for 13 seconds
-INFO:ContainerControl:Sleep for 12 seconds
-INFO:ContainerControl:Sleep for 11 seconds
-INFO:ContainerControl:Sleep for 10 seconds
-INFO:ContainerControl:Sleep for 9 seconds
-INFO:ContainerControl:Sleep for 8 seconds
-INFO:ContainerControl:Sleep for 7 seconds
-INFO:ContainerControl:Sleep for 6 seconds
-INFO:ContainerControl:Sleep for 5 seconds
-INFO:ContainerControl:Sleep for 4 seconds
-INFO:ContainerControl:Sleep for 3 seconds
-INFO:ContainerControl:Sleep for 2 seconds
-INFO:ContainerControl:Sleep for 1 seconds
-INFO:ContainerControl:about to start: xin-rcb-test-1_galera_container-563c787a
-INFO:ContainerControl:Sleep for 30 seconds
-INFO:ContainerControl:Sleep for 29 seconds
-INFO:ContainerControl:Sleep for 28 seconds
-INFO:ContainerControl:Sleep for 27 seconds
-INFO:ContainerControl:Sleep for 26 seconds
-INFO:ContainerControl:Sleep for 25 seconds
-INFO:ContainerControl:Sleep for 24 seconds
-INFO:ContainerControl:Sleep for 23 seconds
-INFO:ContainerControl:Sleep for 22 seconds
-INFO:ContainerControl:Sleep for 21 seconds
-INFO:ContainerControl:Sleep for 20 seconds
-INFO:ContainerControl:Sleep for 19 seconds
-INFO:ContainerControl:Sleep for 18 seconds
-INFO:ContainerControl:Sleep for 17 seconds
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_6.6.1p1)
+INFO:paramiko.transport:Auth banner: ------------------------------------------------------------------------------
+* WARNING                                                                    *
+* You are accessing a secured system and your actions will be logged along   *
+* with identifying information. Disconnect immediately if you are not an     *
+* authorized user of this system.                                            *
+------------------------------------------------------------------------------
+
+INFO:paramiko.transport:Authentication (publickey) successful!
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_6.6.1p1)
+INFO:paramiko.transport:Auth banner: ------------------------------------------------------------------------------
+* WARNING                                                                    *
+* You are accessing a secured system and your actions will be logged along   *
+* with identifying information. Disconnect immediately if you are not an     *
+* authorized user of this system.                                            *
+------------------------------------------------------------------------------
+
+INFO:paramiko.transport:Authentication (publickey) successful!
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_6.6.1p1)
+INFO:paramiko.transport:Auth banner: ------------------------------------------------------------------------------
+* WARNING                                                                    *
+* You are accessing a secured system and your actions will be logged along   *
+* with identifying information. Disconnect immediately if you are not an     *
+* authorized user of this system.                                            *
+------------------------------------------------------------------------------
+
+INFO:paramiko.transport:Authentication (publickey) successful!
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_6.6.1p1)
+INFO:paramiko.transport:Auth banner: ------------------------------------------------------------------------------
+* WARNING                                                                    *
+* You are accessing a secured system and your actions will be logged along   *
+* with identifying information. Disconnect immediately if you are not an     *
+* authorized user of this system.                                            *
+------------------------------------------------------------------------------
+
+INFO:paramiko.transport:Authentication (publickey) successful!
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_6.6.1p1)
+INFO:paramiko.transport:Auth banner: ------------------------------------------------------------------------------
+* WARNING                                                                    *
+* You are accessing a secured system and your actions will be logged along   *
+* with identifying information. Disconnect immediately if you are not an     *
+* authorized user of this system.                                            *
+------------------------------------------------------------------------------
+
+INFO:paramiko.transport:Authentication (publickey) successful!
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_6.6.1p1)
+INFO:paramiko.transport:Auth banner: ------------------------------------------------------------------------------
+* WARNING                                                                    *
+* You are accessing a secured system and your actions will be logged along   *
+* with identifying information. Disconnect immediately if you are not an     *
+* authorized user of this system.                                            *
+------------------------------------------------------------------------------
+
+INFO:paramiko.transport:Authentication (publickey) successful!
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_6.6.1p1)
+INFO:paramiko.transport:Auth banner: ------------------------------------------------------------------------------
+* WARNING                                                                    *
+* You are accessing a secured system and your actions will be logged along   *
+* with identifying information. Disconnect immediately if you are not an     *
+* authorized user of this system.                                            *
+------------------------------------------------------------------------------
+
+INFO:paramiko.transport:Authentication (publickey) successful!
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_6.6.1p1)
+INFO:paramiko.transport:Auth banner: ------------------------------------------------------------------------------
+* WARNING                                                                    *
+* You are accessing a secured system and your actions will be logged along   *
+* with identifying information. Disconnect immediately if you are not an     *
+* authorized user of this system.                                            *
+------------------------------------------------------------------------------
+
+INFO:paramiko.transport:Authentication (publickey) successful!
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_6.6.1p1)
+INFO:paramiko.transport:Auth banner: ------------------------------------------------------------------------------
+* WARNING                                                                    *
+* You are accessing a secured system and your actions will be logged along   *
+* with identifying information. Disconnect immediately if you are not an     *
+* authorized user of this system.                                            *
+------------------------------------------------------------------------------
+
+INFO:paramiko.transport:Authentication (publickey) successful!
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_6.6.1p1)
+INFO:paramiko.transport:Auth banner: ------------------------------------------------------------------------------
+* WARNING                                                                    *
+* You are accessing a secured system and your actions will be logged along   *
+* with identifying information. Disconnect immediately if you are not an     *
+* authorized user of this system.                                            *
+------------------------------------------------------------------------------
+
+INFO:paramiko.transport:Authentication (publickey) successful!

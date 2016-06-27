@@ -1,15 +1,15 @@
 import yaml
 import random
 import paramiko
-import lxc
 from dataContract.container import Container
+from dataContract.host import Host
 from dataContract.containerState import ContainerState
 from dataContract.containerType import ContainerType
 
-class ContainerInfo:
+class InfoParser:
 	containerList = []
+	hostList = []
 	inventory = '/etc/openstack_deploy/openstack_inventory.json'
-	prefix = ''
 
 	def __init__(self):
 		with open(self.inventory) as data_file:    
@@ -17,19 +17,26 @@ class ContainerInfo:
 	
 			if data and data['_meta'] and data['_meta']['hostvars']:
 				try:
-					for key, value in data['_meta']['hostvars'].iteritems():
-						if value['container_address'] != "172.29.236.100":
-							self.containerList.append(Container(key, value['container_address'], lxc.Container(key).state))
+ 					for key, value in data['_meta']['hostvars'].iteritems():
+						if value['component']:
+							self.containerList.append(Container(key, value['component'], value['container_address'], value['physical_host']))
+						elif not value['component'] and value['physical_host'] == key:
+							self.hostList.append(Host(key, value['container_address']))
 						else:
-							self.prefix = key
+							print("parse inventory error")
+							raise
 				except:
 					print("parse inventory error")
 					raise
 	
-	def printContainerInfo(self, containerName=None):
+	def printInfo(self, containerName=None):
 		if not containerName:
+			print 'Container List : '
 			for i in self.containerList:
-				print(i.getName() + " : " + i.getAddress() + " : " + i.getState())
+				print(i.getName() + " : " + i.getAddress() + " : "  + i.getType() + " : " + i.getPhisicalHost())
+			print 'Host List'
+			for i in self.hostList:
+				print(i.hostGetName() + " : " + i.hostGetAddress())
 		else:
 			for i in self.containerList:
 				if containerName == i.getName():
@@ -48,6 +55,6 @@ class ContainerInfo:
 	def getAllContainerList(self):
 		return self.containerList
 		
-	def getContainerPrefix(self):
-		return self.prefix
+	def getAllHostList(self):
+		return self.hostList
 
