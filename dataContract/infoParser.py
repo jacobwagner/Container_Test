@@ -1,14 +1,13 @@
 import yaml
 import random
-import paramiko
 from dataContract.container import Container
 from dataContract.host import Host
 from dataContract.containerState import ContainerState
 from dataContract.containerType import ContainerType
 
 class InfoParser:
-	containerList = []
-	hostList = []
+	containerDic = {}
+	hostDic = {}
 	inventory = '/etc/openstack_deploy/openstack_inventory.json'
 
 	def __init__(self):
@@ -19,9 +18,9 @@ class InfoParser:
 				try:
  					for key, value in data['_meta']['hostvars'].iteritems():
 						if value['component']:
-							self.containerList.append(Container(key, value['component'], value['container_address'], value['physical_host']))
+							self.containerDic[key] = Container(key, value['component'], value['container_address'], value['physical_host'])
 						elif not value['component'] and value['physical_host'] == key:
-							self.hostList.append(Host(key, value['container_address']))
+							self.hostDic[key] = Host(key, value['container_address'])
 						else:
 							print("parse inventory error")
 							raise
@@ -32,29 +31,19 @@ class InfoParser:
 	def printInfo(self, containerName=None):
 		if not containerName:
 			print 'Container List : '
-			for i in self.containerList:
+			for i in self.containerDic.values():
 				print(i.getName() + " : " + i.getAddress() + " : "  + i.getType() + " : " + i.getPhisicalHost())
 			print 'Host List'
-			for i in self.hostList:
+			for i in self.hostDic.values():
 				print(i.hostGetName() + " : " + i.hostGetAddress())
 		else:
-			for i in self.containerList:
+			for i in self.containerDic.values():
 				if containerName == i.getName():
 					print(i.getName() + " : " + i.getAddress() + " : " + i.getState())
-	
-	def getRandomContainer(self, container_type):
-		if len(container_type) == 0 : return ''
-		resultList = []
-		for container in self.containerList:
-			name = container.getName()
-			if container_type in name:
-				resultList.append([name, container.getAddress(), container.getState()])
-		index = random.randrange(0, len(resultList))
-		return resultList[index]
 
-	def getAllContainerList(self):
-		return self.containerList
+	def getAllcontainerDic(self):
+		return self.containerDic
 		
-	def getAllHostList(self):
-		return self.hostList
+	def getAllhostDic(self):
+		return self.hostDic
 
