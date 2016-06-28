@@ -34,7 +34,3 @@ class Utility(object):
 			print "paramikoWrap error"
 			print type(inst)
 			print inst.args
-
-			
-
-

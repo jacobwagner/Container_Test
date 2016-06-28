@@ -14,56 +14,15 @@ import threading
 import pprint
 import yaml
 
-def updateContainerState(containerDic, hostDic):
-	try:
-		for host in hostDic.values():
-			stateList = getContainerStateList(host.getAddress())
-			for line in stateList:
-				lineSplit = line.split()
-				containerDic[lineSplit[0]].setState(lineSplit[1])
-		return containerDic
-	except Exception as inst:
-		print "updateContainerState error"
-		print type(inst)
-		print inst.args     # arguments stored in .args
-		raise
-
-def getContainerStateList(address):
-	try:
-		lxcCommand = "/usr/bin/lxc-ls -f | awk '{print $1, $2}'"
-		res = utility.paramikoWrap(address, lxcCommand)
-		return res[2:] 
-	except Exception as inst:
-		print 'getContainerState error'
-		print type(inst)
-		print inst.args     # arguments stored in .args
-		raise
-
-def generateList(containerDic, hostDic):
-	try:
-		stopList = []
-		runningList = []
-		containerDic = updateContainerState(containerDic, hostDic)
-		for i in containerDic.values():
-			if i.getState() == "RUNNING":
-				runningList.append(i)
-			elif i.getState() == "STOPPED":
-				stopList.append(i)
-		return runningList, stopList
-
-	except Exception as inst:
-		print "generateList error"
-		print type(inst)
-		print inst.args     # arguments stored in .args
-		raise
-
-def randomTest(minimumTime, MaximumTime, containerDic, hostDic):
+def randomTest(minimumTime, MaximumTime):
 	print("Starting chaos...")
 	print(time.ctime())
+	infoParser = InfoParser()
+	utility = Utility()
 
 	while 1:
 		try:
-			runningList, stopList = generateList(containerDic, hostDic)
+			runningList, stopList = infoParser.generateList()
 			print '----------------------------------------------------------------------------------------------------------------------------------------------------'
 			for i in runningList:
 				print i.getState() + ' \t ' + i.getName()
@@ -82,7 +41,7 @@ def randomTest(minimumTime, MaximumTime, containerDic, hostDic):
 					name = runningList[index].getName()
 					print("About to stop: " + name)
 					command = 'lxc-stop -n %s' % name 
-					address = hostDic[runningList[index].getPhisicalHost()].getAddress()
+					address = infoParser.getHostAddress(runningList[index].getPhisicalHost())
 					utility.paramikoWrap(address, command)
 				else:
 					print("Doing nothing for the next %s seconds" % str(t))
@@ -92,7 +51,7 @@ def randomTest(minimumTime, MaximumTime, containerDic, hostDic):
 					name = stopList[index].getName()
 					print("About to start: " + name)
 					command = 'lxc-start -d -n %s' % name 
-					address = hostDic[stopList[index].getPhisicalHost()].getAddress()
+					address = infoParser.getHostAddress(stopList[index].getPhisicalHost())
 					utility.paramikoWrap(address, command)
 				else:
 					print("Doing nothing for the next %s seconds" % str(t))
@@ -117,10 +76,6 @@ if __name__ == '__main__':
 	##sc.runServiceCommand(ip, ServiceName.Memcached, ServiceStatus.Start)
 	##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
 	
-	infoParser = InfoParser()
 	logger = logging.getLogger('ContainerControl')
-	containerDic = infoParser.getAllcontainerDic()
-	hostDic = infoParser.getAllhostDic()
-	utility = Utility()
 
-	randomTest(20, 40, containerDic, hostDic)
+	randomTest(20, 40)
