@@ -16,6 +16,9 @@ class Host:
 	def setAddress(self, address):
 		self.address = address
 
+	def getComponent(self):
+		return self.component
+
 	def setComponent(self, component):
 		self.component = component 
 
@@ -35,6 +38,7 @@ class Host:
 		except:
 			print 'addNodeToDic error'
 			raise
+
 	def getNodeDic(self):
 		return self.nodeDic
 			

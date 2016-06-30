@@ -81,11 +81,11 @@ if __name__ == '__main__':
 
 	infoParser = InfoParser()
 	stack = infoParser.getStackInstance()
+	stack.updateNodeState()
 	stack.printStack()
+#	node = stack.getRandomNode()
+#	print node.getName(), node.getAddress(), node.getComponent()
+#	host = stack.getRandomHost()
+#	print host.getName(), host.getAddress(), host.getComponent()
 
-	a = Stack.Instance()
-	print stack 
-	print a
-	
 
-	#containerControl(20, 40)
