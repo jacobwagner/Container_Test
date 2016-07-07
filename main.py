@@ -13,6 +13,7 @@ import sys
 import re
 import threading
 import pprint
+import os
 import yaml
 
 #def containerControl(minimumTime, MaximumTime):
@@ -81,8 +82,11 @@ if __name__ == '__main__':
 
 	infoParser = InfoParser()
 	stack = infoParser.getStackInstance()
-	stack.updateNodeState()
-	stack.printStack()
+	stack.updateServicesState()
+	
+	
+	#stack.updateNodeState()
+	#stack.createChaos()
 #	node = stack.getRandomNode()
 #	print node.getName(), node.getAddress(), node.getComponent()
 #	host = stack.getRandomHost()

@@ -1,0 +1,195 @@
+{
+  "nova_compute" : {
+    "services" : {
+      "nova-compute"
+    }
+  }, 
+
+  "utility" : {
+    "services" : {
+      ""
+    }
+  }, 
+
+  "heat_engine" : {
+    "services" : {
+      "heat_engine"
+    }
+  }, 
+  "heat_api_cloudwatch" : {
+    "services" : {
+      "heat-api-cloudwatch",
+      "heat-api-cfna",
+      "heat-api"
+    }
+  }, 
+
+  "cinder_scheduler" : {
+    "services" : {
+      "cinder-scheduler"
+    }
+  }, 
+
+  "neutron_server" : {
+    "services" : {
+      "neutron-server"
+    }
+  }, 
+
+  "nova_cert" : {
+    "services" : {
+      "nova-cert"
+    }
+  }, 
+
+  "cinder_api" : {
+    "services" : {
+      "cinder-api"
+    }
+  }, 
+
+  "glance_api" : {
+    "services" : {
+      "glance-registry", 
+      "glance-api"
+    }
+  }, 
+
+  "pkg_repo" : {
+    "services" : {
+      ""
+    }
+  }, 
+
+  "keystone" : {
+    "services" : {
+      "apache2"
+    }
+  }, 
+
+  "memcached" : {
+    "services" : {
+      "memcached"
+    }
+  }, 
+
+  "galera" : {
+    "services" : {
+      ""
+    }
+  }, 
+
+  "swift_proxy" : {
+    "services" : {
+      "swift-proxy-server"
+    }
+  }, 
+
+  "horizon" : {
+    "services" : {
+      "apache2"
+    }
+  }, 
+
+  "nova_api_os_compute" : {
+    "services" : {
+      "nova-api-os-compute"
+    }
+  }, 
+
+  "nova_scheduler" : {
+    "services" : {
+      "nova-scheduler"
+    }
+  }, 
+
+  "nova_api_metadata" : {
+    "services" : {
+      "nova-api-metadata"
+    }
+  }, 
+
+  "neutron_agent" : {  
+    "services" : {
+      "neutron-metadata-agent",
+      "neutron-dhcp-agent",
+      "neutron-linuxbridge-agent",
+      "neutron-metering-agent",
+      "neutron-l3-agent"
+    }
+  }, 
+
+  "nova_conductor" : {
+    "services" : {
+      "nova-conductor"
+    }
+  }, 
+
+  "nova_console" : {
+    "services" : {
+      "nova-spicehtml5proxy",
+      "nova-consoleauth"
+    }
+  }, 
+
+  "rabbitmq" : {  
+    "services" : {
+      "rabbitmq-server"
+    }
+  }, 
+
+  "swift_acc" : {
+    "services" : {
+      "swift-account-server",
+      "swift-account-auditor",
+      "swift-account-reaper",
+      "swift-container-server",
+      "swift-container-updater", 
+      "swift-object-server", 
+      "swift-object-auditor",
+      "swift-object-updater",
+      "swift-object-expirer",
+      "swift-container-reconciler",
+      "swift-container-sync",
+      "swift-container-replicator",
+      "swift-object-replicator",
+      "swift-account-replicator"
+    }
+  }, 
+
+  "cinder_backup" : {
+    "services" : {
+      "cinder-volume"
+    }
+  }, 
+
+  "elasticsearch" : {  
+    "services" : {
+      "elasticsearch"
+    }
+  }, 
+
+  "rsyslog" : {  
+    "services" : {
+      "rsyslog"
+    }
+  }, 
+
+  "logstash" : {
+    "services" : {
+      "logstash"
+    }
+  }, 
+
+  "kibana" : {
+    "services" : {
+      ""
+    }
+  }, 
+
+  "haproxy" : {
+    "services" : {
+      "haproxy"
+    }
+  }
+}

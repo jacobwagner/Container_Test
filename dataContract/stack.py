@@ -1,8 +1,11 @@
-from dataContract.node import Node 
 from dataContract.host import Host
 from dataContract.singleton import Singleton 
+from dataContract.servicesParser import ServicesParser 
 import random
 import paramiko
+import time
+import os
+import sys
 
 @Singleton
 class Stack(object):
@@ -11,31 +14,36 @@ class Stack(object):
 	def __init__(self):
 		self.hosts = {}
 
-	def addHost(self, name, component = None, address = None, ssh_key = None):
+	def addHost(self, name, component, address, host, ssh_key = None):
 		try:
 			if not name:
 				print 'addHost empty name'
 				raise
-			if name not in self.hosts:
-				self.hosts[name] = Host(name, address, component, ssh_key)
+			#host with multiple containers with no component
+			if not component and name == host:
+				if name not in self.hosts:
+					self.hosts[name] = Host(name, host, address, component, ssh_key)
+				else:
+					self.hosts[name].setAddress(address)
+					self.hosts[name].setComponent(component)
+					self.hosts[name].setSshKey(ssh_key)
+			#host has component
+			elif component and name == host:
+				if name not in self.hosts:
+					self.hosts[name] = Host(name, host, address, component, ssh_key)
+				else:
+					self.hosts[name].setAddress(address)
+					self.hosts[name].setComponent(component)
+					self.hosts[name].setSshKey(ssh_key)
+			elif component and name != host:
+				if host in self.hosts:
+					self.hosts[host].addToHostDic(Host(name, host, address, component, ssh_key))
+				else:
+					self.hosts[host] = Host(host)
+					self.hosts[host].addToHostDic(Host(name, host, address, component, ssh_key))
 			else:
-				self.hosts[name].setAddress(address)
-				self.hosts[name].setComponent(component)
-				self.hosts[name].setSshKey(ssh_key)
-		except Exception as inst:
-			print 'addHost error'
-			print type(inst)
-			print inst.args
-			raise
-				
-	def addNode(self, name, component, address, host, state=None):
-		try:
-			if not host or not name or not component or not address:
-				print 'empty info'
+				print "addHost error"
 				raise
-			if host not in self.hosts:
-				self.addHost(host)
-			self.hosts[host].addNodeToDic(Node(name, component, address, host))
 		except Exception as inst:
 			print 'addHost error'
 			print type(inst)
@@ -50,35 +58,70 @@ class Stack(object):
 
 	def printStack(self):
 		for host in self.hosts.values():
-			print host.getName(), '\t', host.getAddress(), '\t', host.getComponent()
+			print (str(host.getAddress()) + '\t' + str(host.getComponent()) + '\t' + str(host.getName())).format()
+			for node in host.getHostDic().values():
+				print ('\t|-------' + str(node.getState()) + '\t' + str(node.getAddress()) + '\t' + str(node.getName()) + '\t' + str(node.getComponent())).format()
+
+	def getHostList(self):
+		try:
+			hostList = []
+			for host in self.hosts.values():
+				if not host.getComponent():
+					if len(host.getHostDic()) != 0:
+						for i in host.getHostDic().values():
+							hostList.append(i)
+				else:
+					hostList.append(host)
+			return hostList
+		except Exception as inst:
+			print 'getServiceDic error'
+			print type(inst)
+			print inst.args
+			raise
+		
+		
+	def updateServicesState(self):
+		try:
+			hostList = self.getHostList()
+			dic = ServicesParser.getServiceDic()
+			for host in hostList:
+				print host.getName(), host.getComponent(), host.getAddress()
+				for service in dic[host.getComponent()]:
+					if 'running'in str(self.paramikoWrap(host.getAddress(), 'service ' + service + ' status')):
+						print '\t\t\t|--------------', service, '  running' 
+					else:
+						print '\t\t\t|--------------', service, '  not running' 
+		except Exception as inst:
+			print inst.args
+			print '\t\t\t|--------------', service, '  not running' 
+		
+
+	def printStackComponent(self):
+		a = []
+		for host in self.hosts.values():
+			b = host.getComponent()
+			if b not in a:
+				a.append(b)
 			for node in host.getNodeDic().values():
-				print '\t|-------' + node.getName(), '\t', node.getAddress(), '\t', node.getComponent(), '\t', node.getState()
+				c = node.getComponent()
+				if c not in a:
+					a.append(c)
+		print a
 
 	def getRandomHost(self):
 		try:
 			hostList = []
 			for host in self.hosts.values():
-				if host.getComponent():
+				if host.getComponent(): 
+					if len(host.getHostDic()) != 0:
+						for i in host.getHostDic().values():
+							hostList.append(i)
+					else: 
 						hostList.append(host)
 			index = self.getRandomInt(len(hostList))
 			return hostList[index]
 		except Exception as inst:
 			print 'getRandomHost error'
-			print type(inst)
-			print inst.args
-			raise
-	
-	def getRandomNode(self):
-		try:
-			nodeList = []
-			for host in self.hosts.values():
-				if not host.getComponent():
-					for node in host.getNodeDic().values():
-						nodeList.append(node)
-			index = self.getRandomInt(len(nodeList))
-			return nodeList[index]
-		except Exception as inst:
-			print 'getRandomNode error'
 			print type(inst)
 			print inst.args
 			raise
@@ -112,14 +155,15 @@ class Stack(object):
 		try:
 			stopList = []
 			runningList = []
-			self.updateContainerState()
-			for i in self.containerDic.values():
-				if i.getState() == "RUNNING":
-					runningList.append(i)
-				elif i.getState() == "STOPPED":
-					stopList.append(i)
+			self.updateNodeState()
+			for host in self.hosts.values():
+				if not host.getComponent():
+					for node in host.getNodeDic().values():
+						if node.getState() == "RUNNING":
+							runningList.append(node)
+						elif node.getState() == "STOPPED":
+							stopList.append(node)
 			return runningList, stopList
-	
 		except Exception as inst:
 			print "generateList error"
 			print type(inst)
@@ -137,8 +181,93 @@ class Stack(object):
 				resList.append(line.encode('ascii', 'ignore'))
 			return resList 
 		except Exception as inst:
-			print "paramikoWrap error"
+			pass
+
+	def createChaos(self, typ='container', maximumTime=30, minimumTime=20):
+			if typ == 'container':
+				self.containerChaos(maximumTime, minimumTime)
+
+	def getHostAddress(self, hostname):
+		try:
+			if hostname:
+				return self.hosts[hostname].getAddress()
+		except Exception as inst:
+			print "getHostAddress error"
 			print type(inst)
 			print inst.args
+	
+			
+	def containerChaos(self, maximumTime, minimumTime):
+		try:
+			while 1:
+				runningList, stopList = self.generateList()
+				print '----------------------------------------------------------------------------------------------------------------------------------------------------'
+				for i in runningList:
+					print i.getState() + ' \t ' + i.getName()
+				print '----------------------------------------------------------------------------------------------------------------------------------------------------'
+				for i in stopList:
+					print i.getState() + ' \t ' + i.getName()
+				print '----------------------------------------------------------------------------------------------------------------------------------------------------'
+				ran = random.randint(0, 1)
+				t = self.getRandomInt(maximumTime-minimumTime)+minimumTime
+				if ran == 1:
+					if len(stopList) > 10:
+						continue
+					index = self.getRandomInt(len(runningList))
+					if index != -1:
+						name = runningList[index].getName()
+						print("About to stop: " + name)
+						command = 'lxc-stop -n %s' % name
+						address = self.getHostAddress(runningList[index].getHost())
+						self.paramikoWrap(address, command)
+					else:
+						print("Doing nothing for the next %s seconds" % str(t))
+				else:
+					index = self.getRandomInt(len(stopList))
+					if index != -1:
+						name = stopList[index].getName()
+						print("About to start: " + name)
+						command = 'lxc-start -d -n %s' % name
+						address = self.getHostAddress(stopList[index].getHost())
+						self.paramikoWrap(address, command)
+					else:
+						print("Doing nothing for the next %s seconds" % str(t))
+					print '----------------------------------------------------------------------------------------------------------------------------------------------------'
+				self.countDown(t)
+		except KeyboardInterrupt:
+			print("Stoping chaos...")
+			sys.exit(0)
+		except Exception as inst:
+			print type(inst)
+			print inst.args
+			print(inst)
+			print(time.ctime())
+			sys.exit(0)
+
+
+
+	def countDown(self, t):
+		if t > 0:
+			for i in xrange(t-1, 0, -1):
+				print('Sleep for %s seconds' %  str(i))
+				sys.stdout.flush()
+				time.sleep(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		

@@ -1,13 +1,12 @@
 import yaml
 import random
-from dataContract.node import Node 
 from dataContract.host import Host
 from utility import Utility
 from dataContract.containerState import ContainerState
 from dataContract.containerType import ContainerType
 from dataContract.stack import Stack 
 
-class InfoParser:
+class InfoParser(object):
 	inventory = '/etc/openstack_deploy/openstack_inventory.json'
 	stack = Stack.Instance()
 
@@ -18,10 +17,7 @@ class InfoParser:
 			if data and data['_meta'] and data['_meta']['hostvars']:
 				try:
  					for key, value in data['_meta']['hostvars'].iteritems():
-						if value['physical_host'] == key:
-							self.stack.addHost(key, value['component'], value['container_address'], value['physical_host'])
-						else:
-							self.stack.addNode(key, value['component'], value['container_address'], value['physical_host'])
+						self.stack.addHost(key, value['component'], value['container_address'], value['physical_host'])
 				except:
 					print("parse inventory error")
 					raise

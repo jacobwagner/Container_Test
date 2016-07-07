@@ -1,14 +1,25 @@
-class Host:
+class Host(object):
 
-	def __init__(self, name, address=None, component=None, ssh_key=None):
+	def __init__(self, name, host=None, address=None, component=None, ssh_key=None, state='UNKNOWN'):
 		self.name = name
+		self.host = host
 		self.address = address
-		self.nodeDic = {}
-		self.ssh_key = ssh_key 
 		self.component = component
+		self.hostDic = {}
+		self.ssh_key = ssh_key 
+		self.state = state
 
 	def getName(self):
 		return self.name
+
+	def setName(self, name):
+		self.name = name
+
+	def getHost(self):
+		return self.host
+
+	def setHost(self, host):
+		self.host = host
 
 	def getAddress(self):
 		return self.address
@@ -28,18 +39,24 @@ class Host:
 	def getSSHKey(self):
 		return self.ssh_key
 
-	def addNodeToDic(self, node):
+	def getState(self):
+		return self.state
+
+	def setState(self, state):
+		self.state = state
+
+	def addToHostDic(self, host):
 		try:
-			if node.getName() in self.nodeDic:
+			if host.getName() in self.hostDic:
 				print 'addNodeToDic error'
 				raise
 			else:
-				self.nodeDic[node.getName()] = node
+				self.hostDic[host.getName()] = host 
 		except:
 			print 'addNodeToDic error'
 			raise
 
-	def getNodeDic(self):
-		return self.nodeDic
+	def getHostDic(self):
+		return self.hostDic
 			
 			
