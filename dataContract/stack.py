@@ -1,6 +1,7 @@
 from dataContract.host import Host
 from dataContract.singleton import Singleton 
 from dataContract.servicesParser import ServicesParser 
+from multiprocessing import pool
 import random
 import paramiko
 import time
@@ -9,7 +10,6 @@ import sys
 
 @Singleton
 class Stack(object):
-	
 
 	def __init__(self):
 		self.hosts = {}
@@ -62,6 +62,7 @@ class Stack(object):
 			for node in host.getHostDic().values():
 				print ('\t|-------' + str(node.getState()) + '\t' + str(node.getAddress()) + '\t' + str(node.getName()) + '\t' + str(node.getComponent())).format()
 
+	#get all the host which has component.
 	def getHostList(self):
 		try:
 			hostList = []
@@ -79,9 +80,11 @@ class Stack(object):
 			print inst.args
 			raise
 		
-		
+	#Go to each host and check the service running/stop
 	def updateServicesState(self):
 		try:
+			
+			
 			hostList = self.getHostList()
 			dic = ServicesParser.getServiceDic()
 			for host in hostList:
@@ -96,28 +99,9 @@ class Stack(object):
 			print '\t\t\t|--------------', service, '  not running' 
 		
 
-	def printStackComponent(self):
-		a = []
-		for host in self.hosts.values():
-			b = host.getComponent()
-			if b not in a:
-				a.append(b)
-			for node in host.getNodeDic().values():
-				c = node.getComponent()
-				if c not in a:
-					a.append(c)
-		print a
-
 	def getRandomHost(self):
 		try:
-			hostList = []
-			for host in self.hosts.values():
-				if host.getComponent(): 
-					if len(host.getHostDic()) != 0:
-						for i in host.getHostDic().values():
-							hostList.append(i)
-					else: 
-						hostList.append(host)
+			hostList = self.getHostList()
 			index = self.getRandomInt(len(hostList))
 			return hostList[index]
 		except Exception as inst:
@@ -133,7 +117,7 @@ class Stack(object):
 					stateList = self.getContainerStateList(host.getAddress())
 					for line in stateList:
 						lineSplit = line.split()
-						self.hosts[host.getName()].nodeDic[lineSplit[0]].setState(lineSplit[1])
+						self.hosts[host.getName()].getHostDic()[lineSplit[0]].setState(lineSplit[1])
 		except Exception as inst:
 			print "updateContainerState error"
 			print type(inst)
@@ -158,7 +142,7 @@ class Stack(object):
 			self.updateNodeState()
 			for host in self.hosts.values():
 				if not host.getComponent():
-					for node in host.getNodeDic().values():
+					for node in host.getHostDic().values():
 						if node.getState() == "RUNNING":
 							runningList.append(node)
 						elif node.getState() == "STOPPED":
@@ -219,7 +203,7 @@ class Stack(object):
 						print("About to stop: " + name)
 						command = 'lxc-stop -n %s' % name
 						address = self.getHostAddress(runningList[index].getHost())
-						self.paramikoWrap(address, command)
+						#self.paramikoWrap(address, command)
 					else:
 						print("Doing nothing for the next %s seconds" % str(t))
 				else:
@@ -229,7 +213,7 @@ class Stack(object):
 						print("About to start: " + name)
 						command = 'lxc-start -d -n %s' % name
 						address = self.getHostAddress(stopList[index].getHost())
-						self.paramikoWrap(address, command)
+						#self.paramikoWrap(address, command)
 					else:
 						print("Doing nothing for the next %s seconds" % str(t))
 					print '----------------------------------------------------------------------------------------------------------------------------------------------------'

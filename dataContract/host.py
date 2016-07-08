@@ -1,62 +1,69 @@
 class Host(object):
+	__name = ''
+	__host = '' 
+	__address = '' 
+	__component = '' 
+	__hostDic = {}
+	__ssh_key = '' 
+	__state = ''
 
 	def __init__(self, name, host=None, address=None, component=None, ssh_key=None, state='UNKNOWN'):
-		self.name = name
-		self.host = host
-		self.address = address
-		self.component = component
-		self.hostDic = {}
-		self.ssh_key = ssh_key 
-		self.state = state
+		self.__name = name
+		self.__host = host
+		self.__address = address
+		self.__component = component
+		self.__hostDic = {}
+		self.__ssh_key = ssh_key 
+		self.__state = state
 
 	def getName(self):
-		return self.name
+		return self.__name
 
 	def setName(self, name):
-		self.name = name
+		self.__name = name
 
 	def getHost(self):
-		return self.host
+		return self.__host
 
 	def setHost(self, host):
-		self.host = host
+		self.__host = host
 
 	def getAddress(self):
-		return self.address
+		return self.__address
 
 	def setAddress(self, address):
-		self.address = address
+		self.__address = address
 
 	def getComponent(self):
-		return self.component
+		return self.__component
 
 	def setComponent(self, component):
-		self.component = component 
+		self.__component = component 
 
 	def setSshKey(self, ssh_key):
-		self.ssh_key = ssh_key 
+		self.__ssh_key = ssh_key 
 
 	def getSSHKey(self):
-		return self.ssh_key
+		return self.__ssh_key
 
 	def getState(self):
-		return self.state
+		return self.__state
 
 	def setState(self, state):
-		self.state = state
+		self.__state = state
 
 	def addToHostDic(self, host):
 		try:
-			if host.getName() in self.hostDic:
+			if host.getName() in self.__hostDic:
 				print 'addNodeToDic error'
 				raise
 			else:
-				self.hostDic[host.getName()] = host 
+				self.__hostDic[host.getName()] = host 
 		except:
 			print 'addNodeToDic error'
 			raise
 
 	def getHostDic(self):
-		return self.hostDic
+		return self.__hostDic
 			
 			
