@@ -1,5 +1,6 @@
 from dataContract.host import Host
 from dataContract.singleton import Singleton 
+from multiprocessing import Pool
 from dataContract.servicesParser import ServicesParser 
 from multiprocessing import pool
 import random
@@ -81,23 +82,41 @@ class Stack(object):
 			raise
 		
 	#Go to each host and check the service running/stop
+#	def updateServicesState(self):
+#		try:
+#			hostList = self.getHostList()
+#			dic = ServicesParser.getServiceDic()
+#			for host in hostList:
+#				print host.getName(), host.getComponent(), host.getAddress()
+#				for service in dic[host.getComponent()]:
+#					if 'running'in str(self.paramikoWrap(host.getAddress(), 'service ' + service + ' status')):
+#						print '\t\t\t|--------------', ' Running \t' , service
+#					else:
+#						print '\t\t\t|--------------', ' Not running\t', service 
+#		except Exception as inst:
+#			print inst.args
+#			print '\t\t\t|--------------', service, '  not running' 
+#
 	def updateServicesState(self):
 		try:
-			
-			
 			hostList = self.getHostList()
 			dic = ServicesParser.getServiceDic()
+			pool = Pool(processes=10)
+			jobList = []
 			for host in hostList:
 				print host.getName(), host.getComponent(), host.getAddress()
 				for service in dic[host.getComponent()]:
-					if 'running'in str(self.paramikoWrap(host.getAddress(), 'service ' + service + ' status')):
-						print '\t\t\t|--------------', service, '  running' 
-					else:
-						print '\t\t\t|--------------', service, '  not running' 
+					jobList.append([host.getAddress(), service])
+#         if 'running'in str(self.paramikoWrap(host.getAddress(), 'service ' + service + ' status')):
+#           print '\t\t\t|--------------', service, '  running'
+#         else:
+#           print '\t\t\t|--------------', service, '  not running'
+
+			print jobList
+			pool.map(doJob, jobList)
 		except Exception as inst:
+			print "exception"
 			print inst.args
-			print '\t\t\t|--------------', service, '  not running' 
-		
 
 	def getRandomHost(self):
 		try:
@@ -110,7 +129,7 @@ class Stack(object):
 			print inst.args
 			raise
 
-	def updateNodeState(self):
+	def updateHostState(self):
 		try:
 			for host in self.hosts.values():
 				if not host.getComponent():
@@ -139,7 +158,7 @@ class Stack(object):
 		try:
 			stopList = []
 			runningList = []
-			self.updateNodeState()
+			self.updateHostState()
 			for host in self.hosts.values():
 				if not host.getComponent():
 					for node in host.getHostDic().values():
@@ -239,19 +258,21 @@ class Stack(object):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		
+def doJob(address_service):
+	try:
+		print address_service
+		if address_service[1]:
+			ssh = paramiko.SSHClient()
+			ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+			ssh.connect(address_service[0])
+			stdin, stdout, stderr = ssh.exec_command('service ' + address_service[1] + ' status')
+			resList = []
+			for line in stdout.readlines():
+				resList.append(line.encode('ascii', 'ignore'))
+			if 'running'in str(resList):
+				print '\t\t\t|--------------', address_service[1], '  running'
+			else:
+				print '\t\t\t|--------------', address_service[1], '  not running'
+	except Exception as inst:
+		print "dojob error"
+		raise
