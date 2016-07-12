@@ -1,10 +1,10 @@
-from dataContract.infoParser import InfoParser 
+from dataContract.infoParser import InfoParser
 from cmd.lxcCommandWrap import LXC
 from dataContract.containerState import ContainerState
 from dataContract.serviceName import ServiceName
 from dataContract.serviceStatus import ServiceStatus
 from dataContract.containerType import ContainerType
-from dataContract.stack import Stack 
+from dataContract.stack import Stack
 from log import logging
 from utility import Utility
 import time
@@ -16,7 +16,7 @@ import pprint
 import os
 import yaml
 
-#def containerControl(minimumTime, MaximumTime):
+# def containerControl(minimumTime, MaximumTime):
 #	print("Starting chaos...")
 #	print(time.ctime())
 #	infoParser = InfoParser()
@@ -70,27 +70,24 @@ import yaml
 #			sys.exit(0)
 #
 if __name__ == '__main__':
+    ##sc = Service()
+    ##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
+    ##sc.runServiceCommand(ip, ServiceName.Memcached, ServiceStatus.Stop)
+    ##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
+    ##sc.runServiceCommand(ip, ServiceName.Memcached, ServiceStatus.Start)
+    ##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
 
-	##sc = Service()
-	##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
-	##sc.runServiceCommand(ip, ServiceName.Memcached, ServiceStatus.Stop)
-	##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
-	##sc.runServiceCommand(ip, ServiceName.Memcached, ServiceStatus.Start)
-	##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
-	
-	logger = logging.getLogger('ContainerControl')
+    logger = logging.getLogger('ContainerControl')
 
-	infoParser = InfoParser()
-	stack = infoParser.getStackInstance()
-	stack.updateServicesState()
-	
-	
-#	stack.updateHostState()
+    infoParser = InfoParser()
+    stack = infoParser.getStackInstance()
+    stack.updateServicesState()
+
+
+# stack.updateHostState()
 #	stack.createChaos()
 
 #	node = stack.getRandomNode()
 #	print node.getName(), node.getAddress(), node.getComponent()
 #	host = stack.getRandomHost()
 #	print host.getName(), host.getAddress(), host.getComponent()
-
-
