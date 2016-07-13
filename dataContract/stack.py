@@ -105,10 +105,13 @@ class Stack(object):
             dic = ServicesParser.getServiceDic()
             pool = Pool(processes=10)
             jobList = []
+            serviceRunningList = []
+            serviceStopList = []
             for host in hostList:
                 print host.getName(), host.getComponent(), host.getAddress()
                 for service in dic[host.getComponent()]:
-                    jobList.append([host.getAddress(), service])
+                    if service != "":
+                        jobList.append([host.getAddress(), service, serviceRunningList, serviceStopList])
                     #         if 'running'in str(self.paramikoWrap(host.getAddress(), 'service ' + service + ' status')):
                     #           print '\t\t\t|--------------', service, '  running'
                     #         else:
@@ -116,8 +119,13 @@ class Stack(object):
 
             print jobList
             pool.map(doJob, jobList)
+            print "---------------------------------------------------------------"
+            print serviceRunningList
+            print "---------------------------------------------------------------"
+            print serviceStopList
+            print "---------------------------------------------------------------"
         except Exception as inst:
-            print "exception"
+            print "updateServiceState exception"
             print inst.args
 
     def getRandomHost(self):
@@ -191,6 +199,8 @@ class Stack(object):
     def createChaos(self, typ='container', maximumTime=30, minimumTime=20):
         if typ == 'container':
             self.containerChaos(maximumTime, minimumTime)
+        if typ == 'service':
+            self.serviceChaos(maximumTime, minimumTime)
 
     def getHostAddress(self, hostname):
         try:
@@ -200,6 +210,21 @@ class Stack(object):
             print "getHostAddress error"
             print type(inst)
             print inst.args
+
+    def serviceChaos(self, maximumTime, minimumTime):
+        try:
+            while 1:
+
+        except KeyboardInterrupt:
+            print("Stopping chaos...")
+            sys.exit(0)
+        except Exception as inst:
+            print type(inst)
+            print inst.args
+            print(inst)
+            print(time.ctime())
+            sys.exit(0)
+
 
     def containerChaos(self, maximumTime, minimumTime):
         try:
@@ -268,9 +293,9 @@ def doJob(address_service):
             for line in stdout.readlines():
                 resList.append(line.encode('ascii', 'ignore'))
             if 'running' in str(resList):
-                print '\t\t\t|--------------', address_service[1], '  running'
+                address_service[3].append(address_service[0])
             else:
-                print '\t\t\t|--------------', address_service[1], '  not running'
+                address_service[4].append(address_service[0])
     except Exception as inst:
         print "dojob error"
         raise
