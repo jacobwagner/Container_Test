@@ -11,13 +11,13 @@
   },
   "heat_engine": {
     "services": {
-      "heat_engine": ""
+      "heat-engine": ""
     }
   },
   "heat_api_cloudwatch": {
     "services": {
       "heat-api-cloudwatch": "",
-      "heat-api-cfna": "",
+      "heat-api-cfn": "",
       "heat-api": ""
     }
   },
