@@ -83,23 +83,6 @@ class Stack(object):
             print inst.args
             raise
 
-            # Go to each host and check the service running/stop
-            #	def updateServicesState(self):
-            #		try:
-            #			hostList = self.getHostList()
-            #			dic = ServicesParser.getServiceDic()
-            #			for host in hostList:
-            #				print host.getName(), host.getComponent(), host.getAddress()
-            #				for service in dic[host.getComponent()]:
-            #					if 'running'in str(self.paramikoWrap(host.getAddress(), 'service ' + service + ' status')):
-            #						print '\t\t\t|--------------', ' Running \t' , service
-            #					else:
-            #						print '\t\t\t|--------------', ' Not running\t', service
-            #		except Exception as inst:
-            #			print inst.args
-            #			print '\t\t\t|--------------', service, '  not running'
-            #
-
     def updateServicesState(self):
         try:
             hostList = self.getHostList()
@@ -109,20 +92,20 @@ class Stack(object):
             for host in hostList:
                 for service in dic[host.getComponent()]:
                     if service != "":
-                        jobList.append([host.getAddress(), service, 'unknown', host.getComponent()])
+                        jobList.append([host.getAddress(), service, ' status', 'unknown', host.getComponent()])
             it = pool.imap(doJob, jobList)
             serviceStateDic = {}
             for item in it:
-                if item[3] not in serviceStateDic:
-                    serviceStateDic[item[3]] = { item[0] : item[2] }
+                if item[4] not in serviceStateDic:
+                    serviceStateDic[item[4]] = { item[0] : item[3] }
                 else:
-                    if item[0] in serviceStateDic[item[3]]:
-                        if item[2] == 'stop':
-                            serviceStateDic[item[3]][item[0]] = 'stop'
-                        elif item[2] == 'unknown':
-                            serviceStateDic[item[3]][item[0]] = 'unknown'
+                    if item[0] in serviceStateDic[item[4]]:
+                        if item[3] == 'stop':
+                            serviceStateDic[item[4]][item[0]] = 'stop'
+                        elif item[3] == 'unknown':
+                            serviceStateDic[item[4]][item[0]] = 'unknown'
                     else:
-                        serviceStateDic[item[3]][item[0]] = item[2]
+                        serviceStateDic[item[4]][item[0]] = item[3]
             return serviceStateDic
 
         except KeyboardInterrupt:
@@ -204,7 +187,7 @@ class Stack(object):
         try:
             if typ == 'container':
                 self.containerChaos(maximumTime, minimumTime)
-            if typ == 'service':
+            elif typ == 'service':
                 self.serviceChaos(maximumTime, minimumTime)
         except KeyboardInterrupt:
             print("Stopping chaos...")
@@ -221,33 +204,53 @@ class Stack(object):
 
     def serviceChaos(self, maximumTime, minimumTime):
         try:
+            dic = ServicesParser.getServiceDic()
+            pool = Pool(processes=2)
             while 1:
+                t = self.getRandomInt(maximumTime - minimumTime) + minimumTime
+                self.countDown(t)
                 serviceDic = self.updateServicesState()
                 componentList = serviceDic.keys()
 
                 runningList, stopList = self.generateServiceList(serviceDic)
                 ran = random.randint(0, 1)
-                index = self.getRandomInt(len(runningList))
-                  
-                if index != -1:
-                    randomComponent = runningList[index]
-                    addressList = serviceDic[randomComponent].keys()
-                    address = addressList[self.getRandomInt(len(addressList))]
-                    print address, randomComponent
-               
+                address = ''
+                randomComponent = ''
+                jobList = []
+                cmd = ''
+                if ran:
+                    index = self.getRandomInt(len(runningList))
+                    if index != -1:
+                        print "1"
+                        cmd = 'stop'
+                        randomComponent = runningList[index]
+                        addressList = serviceDic[randomComponent].keys()
+                        address = addressList[self.getRandomInt(len(addressList))]
+                        print address, randomComponent
+                    else:
+                        print "2"
+                        print "Doing nothing"
+                        continue
+                else:
+                    index = self.getRandomInt(len(stopList))
+                    if index != -1:
+                        print "3"
+                        cmd = 'start'
+                        randomComponent = stopList[index]
+                        addressList = serviceDic[randomComponent].keys()
+                        address = addressList[self.getRandomInt(len(addressList))]
+                        print address, randomComponent
+                    else:
+                        print "4"
+                        print "Doing nothing"
+                        continue
 
-
-
-
-
-
-
-
-
-
-                t = self.getRandomInt(maximumTime - minimumTime) + minimumTime
-                self.countDown(t)
-
+                for service in dic[randomComponent]:
+                    if service != "":
+                        jobList.append([address, service, cmd, 'unknown', randomComponent])
+                print jobList
+                #it = pool.imap(doJob, jobList)
+  
         except KeyboardInterrupt:
             print("Stopping chaos...")
             sys.exit(0)
@@ -257,6 +260,7 @@ class Stack(object):
             print inst.args
             print(inst)
             sys.exit(0)
+
     def generateServiceList(self, serviceDic):
         try:
             runningList = []
@@ -349,21 +353,23 @@ class Stack(object):
                 time.sleep(1)
 
 
-def doJob(address_service):
+def doJob(jobList):
     try:
-        if address_service[1]:
+        if jobList[1]:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(address_service[0])
-            stdin, stdout, stderr = ssh.exec_command('service ' + address_service[1] + ' status')
+            ssh.connect(jobList[0])
+            stdin, stdout, stderr = ssh.exec_command('service ' + jobList[1] + jobList[2])
             resList = []
             for line in stdout.readlines():
                 resList.append(line.encode('ascii', 'ignore'))
             if 'running' in str(resList):
-                address_service[2] = 'running'
+                jobList[3] = 'running'
+            elif 'stop' in str(resList):
+                jobList[3] = 'stop'
             else:
-                address_service[2] = 'stop'
-            return address_service
+                jobList[3] = 'unknown'
+            return jobList
     except paramiko.BadHostKeyException, e:
         raise BadHostKeyError(e.hostname, e.key, e.expected_key)
     except paramiko.AuthenticationException, e:
@@ -374,9 +380,9 @@ def doJob(address_service):
         print("Stopping chaos...")
         sys.exit(0)
     except Exception as inst:
-        address_service[2] = 'no response'
+        jobList[2] = 'no response'
         print "dojob error"
         print type(inst)
         print inst.args
         print(inst)
-        return address_service
+        return jobList
