@@ -351,6 +351,9 @@ class Stack(object):
                 print('Sleep for %s seconds' % str(i))
                 sys.stdout.flush()
                 time.sleep(1)
+        else:
+            print "error time ", t
+            raise
 
 
 def doJob(jobList):
@@ -380,7 +383,7 @@ def doJob(jobList):
         print("Stopping chaos...")
         sys.exit(0)
     except Exception as inst:
-        jobList[2] = 'no response'
+        jobList[3] = 'no response'
         print "dojob error"
         print type(inst)
         print inst.args
