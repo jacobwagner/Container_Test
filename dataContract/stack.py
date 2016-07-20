@@ -8,8 +8,9 @@ import paramiko
 import time
 import os
 import sys
+import logging
 
-
+logger = logging.getLogger('chaos')
 
 @Singleton
 class Stack(object):
@@ -19,8 +20,8 @@ class Stack(object):
     def addHost(self, name, component, address, host, ssh_key=None):
         try:
             if not name:
-                print 'addHost empty name'
-                raise
+                logger.info("addHost empty name")
+                return False
             # host with multiple containers with no component
             if not component and name == host:
                 if name not in self.hosts:
@@ -29,6 +30,7 @@ class Stack(object):
                     self.hosts[name].setAddress(address)
                     self.hosts[name].setComponent(component)
                     self.hosts[name].setSshKey(ssh_key)
+                return True
             # host has component
             elif component and name == host:
                 if name not in self.hosts:
@@ -37,33 +39,28 @@ class Stack(object):
                     self.hosts[name].setAddress(address)
                     self.hosts[name].setComponent(component)
                     self.hosts[name].setSshKey(ssh_key)
+                return True
             elif component and name != host:
                 if host in self.hosts:
                     self.hosts[host].addToHostDic(Host(name, host, address, component, ssh_key))
                 else:
                     self.hosts[host] = Host(host)
                     self.hosts[host].addToHostDic(Host(name, host, address, component, ssh_key))
+                return True
             else:
-                print "addHost error"
-                raise
+                logger.info("addHost unknown input")
+                return False 
         except Exception as inst:
-            print 'addHost error'
-            print type(inst)
-            print inst.args
-            raise
+            logger.info('addHost error')
+            logger.info(type(inst))
+            logger.info(inst.args)
+            return False 
 
     def getRandomInt(self, num):
         if num > 0:
             return random.randint(0, num - 1)
         else:
             return -1
-
-    def printStack(self):
-        for host in self.hosts.values():
-            print (str(host.getAddress()) + '\t' + str(host.getComponent()) + '\t' + str(host.getName())).format()
-            for node in host.getHostDic().values():
-                print ('\t|-------' + str(node.getState()) + '\t' + str(node.getAddress()) + '\t' + str(
-                    node.getName()) + '\t' + str(node.getComponent())).format()
 
     # get all the host which has component.
     def getHostList(self):
@@ -78,9 +75,9 @@ class Stack(object):
                     hostList.append(host)
             return hostList
         except Exception as inst:
-            print 'getServiceDic error'
-            print type(inst)
-            print inst.args
+            logger.info('getServiceDic error')
+            logger.info(type(inst))
+            logger.info(inst.args)
             raise
 
     def updateServicesState(self):
@@ -112,8 +109,8 @@ class Stack(object):
             print("Stopping chaos...")
             sys.exit(0)
         except Exception as inst:
-            print "updateServiceState exception"
-            print inst.args
+            logger.info("updateServiceState exception")
+            logger.info(inst.args)
 
     def getRandomHost(self):
         try:
@@ -121,9 +118,9 @@ class Stack(object):
             index = self.getRandomInt(len(hostList))
             return hostList[index]
         except Exception as inst:
-            print 'getRandomHost error'
-            print type(inst)
-            print inst.args
+            logger.info('getRandomHost error')
+            logger.info(type(inst))
+            logger.info(inst.args)
             raise
 
     def updateHostState(self):
@@ -135,20 +132,20 @@ class Stack(object):
                         lineSplit = line.split()
                         self.hosts[host.getName()].getHostDic()[lineSplit[0]].setState(lineSplit[1])
         except Exception as inst:
-            print "updateContainerState error"
-            print type(inst)
-            print inst.args  # arguments stored in .args
+            logger.info("updateContainerState error")
+            logger.info(type(inst))
+            logger.info(inst.args)
             raise
 
     def getContainerStateList(self, address):
         try:
-            lxcCommand = "/usr/bin/lxc-ls -f | awk '{print $1, $2}'"
+            lxcCommand = "/usr/bin/lxc-ls -f | awk '{logger.info($1, $2}'"
             res = self.paramikoWrap(address, lxcCommand)
             return res[2:]
         except Exception as inst:
-            print 'getContainerState error'
-            print type(inst)
-            print inst.args  # arguments stored in .args
+            logger.info('getContainerState error')
+            logger.info(type(inst))
+            logger.info(inst.args)
             raise
 
     def generateHostList(self):
@@ -165,9 +162,9 @@ class Stack(object):
                             stopList.append(node)
             return runningList, stopList
         except Exception as inst:
-            print "generateHostList error"
-            print type(inst)
-            print inst.args  # arguments stored in .args
+            logger.info("generateHostList error")
+            logger.info(type(inst))
+            logger.info(inst.args)
             raise
 
     def paramikoWrap(self, address, command):
@@ -198,9 +195,9 @@ class Stack(object):
             if hostname:
                 return self.hosts[hostname].getAddress()
         except Exception as inst:
-            print "getHostAddress error"
-            print type(inst)
-            print inst.args
+            logger.info("getHostAddress error")
+            logger.info(type(inst))
+            logger.info(inst.args)
 
     def serviceChaos(self, maximumTime, minimumTime):
         try:
@@ -221,43 +218,37 @@ class Stack(object):
                 if ran:
                     index = self.getRandomInt(len(runningList))
                     if index != -1:
-                        print "1"
                         cmd = 'stop'
                         randomComponent = runningList[index]
                         addressList = serviceDic[randomComponent].keys()
                         address = addressList[self.getRandomInt(len(addressList))]
-                        print address, randomComponent
                     else:
-                        print "2"
-                        print "Doing nothing"
+                        logger.info("Doing nothing")
                         continue
                 else:
                     index = self.getRandomInt(len(stopList))
                     if index != -1:
-                        print "3"
                         cmd = 'start'
                         randomComponent = stopList[index]
                         addressList = serviceDic[randomComponent].keys()
                         address = addressList[self.getRandomInt(len(addressList))]
-                        print address, randomComponent
                     else:
-                        print "4"
-                        print "Doing nothing"
+                        logger.info("Doing nothing")
                         continue
 
                 for service in dic[randomComponent]:
                     if service != "":
                         jobList.append([address, service, cmd, 'unknown', randomComponent])
-                print jobList
+                logger.info(jobList)
                 #it = pool.imap(doJob, jobList)
   
         except KeyboardInterrupt:
             print("Stopping chaos...")
             sys.exit(0)
         except Exception as inst:
-            print "serviceChaos error"
-            print type(inst)
-            print inst.args
+            logger.info("serviceChaos error")
+            logger.info(type(inst))
+            logger.info(inst.args)
             print(inst)
             sys.exit(0)
 
@@ -274,9 +265,9 @@ class Stack(object):
             return runningList, stopList
 
         except Exception as inst:
-            print "serviceChaos error"
-            print type(inst)
-            print inst.args
+            logger.info("serviceChaos error")
+            logger.info(type(inst))
+            logger.info(inst.args)
             print(inst)
             sys.exit(0)
 
@@ -292,23 +283,22 @@ class Stack(object):
             return state
 
         except Exception as inst:
-            print "checkListState error"
-            print type(inst)
-            print inst.args
-            print(inst)
+            logger.info("checkListState error")
+            logger.info(type(inst))
+            logger.info(inst.args)
             sys.exit(0)
 
     def containerChaos(self, maximumTime, minimumTime):
         try:
             while 1:
                 runningList, stopList = self.generateHostList()
-                print '----------------------------------------------------------------------------------------------------------------------------------------------------'
+                logger.info('----------------------------------------------------------------------------------------------------------------------------------------------------')
                 for i in runningList:
-                    print i.getState() + ' \t ' + i.getName()
-                print '----------------------------------------------------------------------------------------------------------------------------------------------------'
+                    logger.info(i.getState() + ' \t ' + i.getName())
+                logger.info('----------------------------------------------------------------------------------------------------------------------------------------------------')
                 for i in stopList:
-                    print i.getState() + ' \t ' + i.getName()
-                print '----------------------------------------------------------------------------------------------------------------------------------------------------'
+                    logger.info(i.getState() + ' \t ' + i.getName())
+                logger.info('----------------------------------------------------------------------------------------------------------------------------------------------------')
                 ran = random.randint(0, 1)
                 t = self.getRandomInt(maximumTime - minimumTime) + minimumTime
                 if ran == 1:
@@ -333,16 +323,16 @@ class Stack(object):
                     # self.paramikoWrap(address, command)
                     else:
                         print("Doing nothing for the next %s seconds" % str(t))
-                    print '----------------------------------------------------------------------------------------------------------------------------------------------------'
+                    logger.info('----------------------------------------------------------------------------------------------------------------------------------------------------')
                 self.countDown(t)
         except KeyboardInterrupt:
             print("Stoping chaos...")
             sys.exit(0)
         except Exception as inst:
-            print type(inst)
-            print inst.args
-            print(inst)
-            print(time.ctime())
+            logger.info(type(inst))
+            logger.info(inst.args)
+            logger.info(inst)
+            logger.info(time.ctime())
             sys.exit(0)
 
     def countDown(self, t):
@@ -352,7 +342,7 @@ class Stack(object):
                 sys.stdout.flush()
                 time.sleep(1)
         else:
-            print "error time ", t
+            logger.info("error time ", t)
             raise
 
 
@@ -384,8 +374,7 @@ def doJob(jobList):
         sys.exit(0)
     except Exception as inst:
         jobList[3] = 'no response'
-        print "dojob error"
-        print type(inst)
-        print inst.args
-        print(inst)
+        logger.info("dojob error")
+        logger.info(type(inst))
+        logger.info(inst.args)
         return jobList
