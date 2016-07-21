@@ -75,10 +75,10 @@ class Stack(object):
                     hostList.append(host)
             return hostList
         except Exception as inst:
-            logger.info('getServiceDic error')
+            logger.info('getHostList error')
             logger.info(type(inst))
             logger.info(inst.args)
-            raise
+            return []
 
     def updateServicesState(self):
         try:
@@ -90,7 +90,9 @@ class Stack(object):
                 for service in dic[host.getComponent()]:
                     if service != "":
                         jobList.append([host.getAddress(), service, ' status', 'unknown', host.getComponent()])
+
             it = pool.imap(doJob, jobList)
+
             serviceStateDic = {}
             for item in it:
                 if item[4] not in serviceStateDic:
@@ -115,13 +117,15 @@ class Stack(object):
     def getRandomHost(self):
         try:
             hostList = self.getHostList()
-            index = self.getRandomInt(len(hostList))
-            return hostList[index]
+            if len(hostList) != 0:
+                index = self.getRandomInt(len(hostList))
+                return hostList[index]
         except Exception as inst:
             logger.info('getRandomHost error')
             logger.info(type(inst))
             logger.info(inst.args)
-            raise
+        finally:
+            return None
 
     def updateHostState(self):
         try:
@@ -178,7 +182,7 @@ class Stack(object):
                 resList.append(line.encode('ascii', 'ignore'))
             return resList
         except Exception as inst:
-            pass
+            return []
 
     def createChaos(self, typ='service', maximumTime=30, minimumTime=20):
         try:
