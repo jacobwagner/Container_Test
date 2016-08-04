@@ -92,7 +92,7 @@ if __name__ == '__main__':
     infoParser = InfoParser()
     stack = infoParser.getStackInstance()
     stack.printStack()
-     # stack.updateServicesState()
+    stack.updateServicesState()
 
 # stack.updateHostState()
     #stack.createChaos()

@@ -61,11 +61,11 @@ class Stack(object):
     def printStack(self):
         try:
             for host in self.hosts.values():
-                print host.getName()
+                print host.getName(), host.getComponent()
                 dic = host.getHostDic()
                 if len(dic.values()) != 0:
                     for subhost in dic.values():
-                        print '-----: ', subhost.getName()
+                        print '-----: ', subhost.getName(), subhost.getComponent()
         except Exception as inst:
             logger.info('printStack error')
             logger.info(type(inst))
@@ -104,8 +104,10 @@ class Stack(object):
 
             it = pool.imap(doJob, jobList)
 
+            count = 0
             serviceStateDic = {}
             for item in it:
+                count += 1
                 if item[4] not in serviceStateDic:
                     serviceStateDic[item[4]] = { item[0] : item[3] }
                 else:
@@ -116,6 +118,7 @@ class Stack(object):
                             serviceStateDic[item[4]][item[0]] = 'unknown'
                     else:
                         serviceStateDic[item[4]][item[0]] = item[3]
+    
             return serviceStateDic
 
         except KeyboardInterrupt:
@@ -377,7 +380,6 @@ def doJob(jobList):
                 jobList[3] = 'stop'
             else:
                 jobList[3] = 'unknown'
-            return jobList
     except paramiko.BadHostKeyException, e:
         raise BadHostKeyError(e.hostname, e.key, e.expected_key)
     except paramiko.AuthenticationException, e:
@@ -392,4 +394,5 @@ def doJob(jobList):
         logger.info("dojob error")
         logger.info(type(inst))
         logger.info(inst.args)
+    finally:
         return jobList
