@@ -52,6 +52,9 @@ class Host(object):
     def setState(self, state):
         self.__state = state
 
+    def getHostDic(self):
+        return self.__hostDic
+
     def addToHostDic(self, host):
         try:
             if host.getName() in self.__hostDic:

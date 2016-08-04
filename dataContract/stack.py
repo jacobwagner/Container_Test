@@ -19,11 +19,10 @@ class Stack(object):
 
     def addHost(self, name, component, address, host, ssh_key=None):
         try:
-            if not name:
+            if not name or not host:
                 logger.info("addHost empty name")
                 return False
-            # host with multiple containers with no component
-            if not component and name == host:
+            if name == host:
                 if name not in self.hosts:
                     self.hosts[name] = Host(name, host, address, component, ssh_key)
                 else:
@@ -32,24 +31,21 @@ class Stack(object):
                     self.hosts[name].setSshKey(ssh_key)
                 return True
             # host has component
-            elif component and name == host:
-                if name not in self.hosts:
-                    self.hosts[name] = Host(name, host, address, component, ssh_key)
-                else:
-                    self.hosts[name].setAddress(address)
-                    self.hosts[name].setComponent(component)
-                    self.hosts[name].setSshKey(ssh_key)
-                return True
-            elif component and name != host:
+#            elif component and name == host:
+#                if name not in self.hosts:
+#                    self.hosts[name] = Host(name, host, address, component, ssh_key)
+#                else:
+#                    self.hosts[name].setAddress(address)
+#                    self.hosts[name].setComponent(component)
+#                    self.hosts[name].setSshKey(ssh_key)
+#                return True
+            else:
                 if host in self.hosts:
                     self.hosts[host].addToHostDic(Host(name, host, address, component, ssh_key))
                 else:
                     self.hosts[host] = Host(host)
                     self.hosts[host].addToHostDic(Host(name, host, address, component, ssh_key))
                 return True
-            else:
-                logger.info("addHost unknown input")
-                return False 
         except Exception as inst:
             logger.info('addHost error')
             logger.info(type(inst))
@@ -61,6 +57,21 @@ class Stack(object):
             return random.randint(0, num - 1)
         else:
             return -1
+
+    def printStack(self):
+        try:
+            for host in self.hosts.values():
+                print host.getName()
+                dic = host.getHostDic()
+                if len(dic.values()) != 0:
+                    for subhost in dic.values():
+                        print '-----: ', subhost.getName()
+        except Exception as inst:
+            logger.info('printStack error')
+            logger.info(type(inst))
+            logger.info(inst.args)
+
+
 
     # get all the host which has component.
     def getHostList(self):
