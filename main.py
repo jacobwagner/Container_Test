@@ -78,11 +78,20 @@ if __name__ == '__main__':
     ##sc.checkServiceStatus(ip, ServiceName.Memcached, ServiceStatus.Status)
 
     logger = logging.getLogger('ContainerControl')
+    LEVELS = {'debug': logging.DEBUG,
+              'info': logging.INFO,
+              'warning': logging.WARNING,
+              'error': logging.ERROR,
+              'critical': logging.CRITICAL}
+
+    if len(sys.argv) > 1:
+        level_name = sys.argv[1]
+        level = LEVELS.get(level_name, logging.NOTSET)
+        logging.basicConfig(level=level)
 
     infoParser = InfoParser()
     stack = infoParser.getStackInstance()
-   # stack.updateServicesState()
-
+     # stack.updateServicesState()
 
 # stack.updateHostState()
     stack.createChaos()
