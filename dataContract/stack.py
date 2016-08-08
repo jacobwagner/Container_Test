@@ -20,7 +20,7 @@ class Stack(object):
     def addHost(self, name, component, address, host, ssh_key=None):
         try:
             if not name or not host:
-                logger.info("addHost empty name")
+                logger.error("addHost empty name")
                 return False
             if name == host:
                 if name not in self.hosts:
@@ -47,9 +47,10 @@ class Stack(object):
                     self.hosts[host].addToHostDic(Host(name, host, address, component, ssh_key))
                 return True
         except Exception as inst:
-            logger.info('addHost error')
-            logger.info(type(inst))
-            logger.info(inst.args)
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
             return False 
 
     def getRandomInt(self, num):
@@ -67,11 +68,10 @@ class Stack(object):
                     for subhost in dic.values():
                         print '-----: ', subhost.getName()
         except Exception as inst:
-            logger.info('printStack error')
-            logger.info(type(inst))
-            logger.info(inst.args)
-
-
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
 
     # get all the host which has component.
     def getHostList(self):
@@ -86,9 +86,10 @@ class Stack(object):
                     hostList.append(host)
             return hostList
         except Exception as inst:
-            logger.info('getHostList error')
-            logger.info(type(inst))
-            logger.info(inst.args)
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
             return []
 
     def updateServicesState(self):
@@ -122,8 +123,9 @@ class Stack(object):
             print("Stopping chaos...")
             sys.exit(0)
         except Exception as inst:
-            logger.info("updateServiceState exception")
-            logger.info(inst.args)
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(inst.args)
 
     def getRandomHost(self):
         try:
@@ -132,9 +134,10 @@ class Stack(object):
                 index = self.getRandomInt(len(hostList))
                 return hostList[index]
         except Exception as inst:
-            logger.info('getRandomHost error')
-            logger.info(type(inst))
-            logger.info(inst.args)
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
         finally:
             return None
 
@@ -147,20 +150,22 @@ class Stack(object):
                         lineSplit = line.split()
                         self.hosts[host.getName()].getHostDic()[lineSplit[0]].setState(lineSplit[1])
         except Exception as inst:
-            logger.info("updateContainerState error")
-            logger.info(type(inst))
-            logger.info(inst.args)
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
             raise
 
     def getContainerStateList(self, address):
         try:
-            lxcCommand = "/usr/bin/lxc-ls -f | awk '{logger.info($1, $2}'"
+            lxcCommand = "/usr/bin/lxc-ls -f | awk '{logger.error($1, $2}'"
             res = self.paramikoWrap(address, lxcCommand)
             return res[2:]
         except Exception as inst:
-            logger.info('getContainerState error')
-            logger.info(type(inst))
-            logger.info(inst.args)
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
             raise
 
     def generateHostList(self):
@@ -177,9 +182,10 @@ class Stack(object):
                             stopList.append(node)
             return runningList, stopList
         except Exception as inst:
-            logger.info("generateHostList error")
-            logger.info(type(inst))
-            logger.info(inst.args)
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
             raise
 
     def paramikoWrap(self, address, command):
@@ -193,6 +199,8 @@ class Stack(object):
                 resList.append(line.encode('ascii', 'ignore'))
             return resList
         except Exception as inst:
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             return []
 
     def createChaos(self, typ='service', maximumTime=30, minimumTime=20):
@@ -202,6 +210,8 @@ class Stack(object):
             elif typ == 'service':
                 self.serviceChaos(maximumTime, minimumTime)
         except KeyboardInterrupt:
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             print("Stopping chaos...")
             sys.exit(0)
 
@@ -210,9 +220,10 @@ class Stack(object):
             if hostname:
                 return self.hosts[hostname].getAddress()
         except Exception as inst:
-            logger.info("getHostAddress error")
-            logger.info(type(inst))
-            logger.info(inst.args)
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
 
     def serviceChaos(self, maximumTime, minimumTime):
         try:
@@ -238,7 +249,7 @@ class Stack(object):
                         addressList = serviceDic[randomComponent].keys()
                         address = addressList[self.getRandomInt(len(addressList))]
                     else:
-                        logger.info("Doing nothing")
+                        logger.error("Doing nothing")
                         continue
                 else:
                     index = self.getRandomInt(len(stopList))
@@ -248,22 +259,23 @@ class Stack(object):
                         addressList = serviceDic[randomComponent].keys()
                         address = addressList[self.getRandomInt(len(addressList))]
                     else:
-                        logger.info("Doing nothing")
+                        logger.error("Doing nothing")
                         continue
 
                 for service in dic[randomComponent]:
                     if service != "":
                         jobList.append([address, service, cmd, 'unknown', randomComponent])
-                logger.info(jobList)
+                logger.error(jobList)
                 #it = pool.imap(doJob, jobList)
   
         except KeyboardInterrupt:
             print("Stopping chaos...")
             sys.exit(0)
         except Exception as inst:
-            logger.info("serviceChaos error")
-            logger.info(type(inst))
-            logger.info(inst.args)
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
             print(inst)
             sys.exit(0)
 
@@ -280,9 +292,10 @@ class Stack(object):
             return runningList, stopList
 
         except Exception as inst:
-            logger.info("serviceChaos error")
-            logger.info(type(inst))
-            logger.info(inst.args)
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
             print(inst)
             sys.exit(0)
 
@@ -298,22 +311,23 @@ class Stack(object):
             return state
 
         except Exception as inst:
-            logger.info("checkListState error")
-            logger.info(type(inst))
-            logger.info(inst.args)
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
             sys.exit(0)
 
     def containerChaos(self, maximumTime, minimumTime):
         try:
             while 1:
                 runningList, stopList = self.generateHostList()
-                logger.info('----------------------------------------------------------------------------------------------------------------------------------------------------')
+                logger.error('----------------------------------------------------------------------------------------------------------------------------------------------------')
                 for i in runningList:
-                    logger.info(i.getState() + ' \t ' + i.getName())
-                logger.info('----------------------------------------------------------------------------------------------------------------------------------------------------')
+                    logger.error(i.getState() + ' \t ' + i.getName())
+                logger.error('----------------------------------------------------------------------------------------------------------------------------------------------------')
                 for i in stopList:
-                    logger.info(i.getState() + ' \t ' + i.getName())
-                logger.info('----------------------------------------------------------------------------------------------------------------------------------------------------')
+                    logger.error(i.getState() + ' \t ' + i.getName())
+                logger.error('----------------------------------------------------------------------------------------------------------------------------------------------------')
                 ran = random.randint(0, 1)
                 t = self.getRandomInt(maximumTime - minimumTime) + minimumTime
                 if ran == 1:
@@ -338,16 +352,18 @@ class Stack(object):
                     # self.paramikoWrap(address, command)
                     else:
                         print("Doing nothing for the next %s seconds" % str(t))
-                    logger.info('----------------------------------------------------------------------------------------------------------------------------------------------------')
+                    logger.error('----------------------------------------------------------------------------------------------------------------------------------------------------')
                 self.countDown(t)
         except KeyboardInterrupt:
             print("Stoping chaos...")
             sys.exit(0)
         except Exception as inst:
-            logger.info(type(inst))
-            logger.info(inst.args)
-            logger.info(inst)
-            logger.info(time.ctime())
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
+            logger.error(inst)
+            logger.error(time.ctime())
             sys.exit(0)
 
     def countDown(self, t):
@@ -357,7 +373,7 @@ class Stack(object):
                 sys.stdout.flush()
                 time.sleep(1)
         else:
-            logger.info("error time ", t)
+            logger.error("error time ", t)
             raise
 
 
@@ -389,7 +405,7 @@ def doJob(jobList):
         sys.exit(0)
     except Exception as inst:
         jobList[3] = 'no response'
-        logger.info("dojob error")
-        logger.info(type(inst))
-        logger.info(inst.args)
+        logger.error("dojob error")
+        logger.error(type(inst))
+        logger.error(inst.args)
         return jobList

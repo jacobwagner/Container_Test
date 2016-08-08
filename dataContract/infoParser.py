@@ -5,10 +5,16 @@ from utility import Utility
 from dataContract.containerState import ContainerState
 from dataContract.containerType import ContainerType
 from dataContract.stack import Stack
+from log import logging
+
+
+logger = logging.getLogger('chaos.infoparser')
 
 
 class InfoParser(object):
+
     inventory = '/etc/openstack_deploy/openstack_inventory.json'
+    logger.info(inventory)
     stack = Stack.Instance()
 
     def __init__(self, ):
@@ -20,13 +26,14 @@ class InfoParser(object):
                     for key, value in data['_meta']['hostvars'].iteritems():
                         self.stack.addHost(key, value['component'], value['container_address'], value['physical_host'])
                 except:
-                    print("parse inventory error")
+                    logger.error("parse inventory error")
                     raise
 
     def getStackInstance(self):
         return self.stack
 
     def updateContainerState(self):
+        logger.info('updateContainerState')
         try:
             for host in self.hostDic.values():
                 stateList = self.getContainerStateList(host.getAddress())
@@ -34,9 +41,9 @@ class InfoParser(object):
                     lineSplit = line.split()
                     self.containerDic[lineSplit[0]].setState(lineSplit[1])
         except Exception as inst:
-            print "updateContainerState error"
-            print type(inst)
-            print inst.args  # arguments stored in .args
+            logger.error("updateContainerState error")
+            logger.error(type(inst))
+            logger.error(inst.args)
             raise
 
     def getContainerStateList(self, address):
@@ -46,9 +53,9 @@ class InfoParser(object):
             res = utility.paramikoWrap(address, lxcCommand)
             return res[2:]
         except Exception as inst:
-            print 'getContainerState error'
-            print type(inst)
-            print inst.args  # arguments stored in .args
+            logger.error('getContainerState error')
+            logger.error(type(inst))
+            logger.error(inst.args)
             raise
 
     def generateList(self):
@@ -64,15 +71,15 @@ class InfoParser(object):
             return runningList, stopList
 
         except Exception as inst:
-            print "generateList error"
-            print type(inst)
-            print inst.args  # arguments stored in .args
+            logger.error("generateList error")
+            logger.error(type(inst))
+            logger.error(inst.args)
             raise
 
     def getHostAddress(self, name):
         try:
             return self.hostDic[name].getAddress()
         except Exception as inst:
-            print "getHostAddress error"
-            print type(inst)
-            print inst.args
+            logger.error("getHostAddress error")
+            logger.error(type(inst))
+            logger.error(inst.args)
