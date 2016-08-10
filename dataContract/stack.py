@@ -9,6 +9,7 @@ import time
 import os
 import sys
 import logging
+import inspect
 
 logger = logging.getLogger('chaos')
 
@@ -62,11 +63,11 @@ class Stack(object):
     def printStack(self):
         try:
             for host in self.hosts.values():
-                print host.getName(), host.getComponent()
+                print host.getAddress(), host.getName(), host.getComponent()
                 dic = host.getHostDic()
                 if len(dic.values()) != 0:
                     for subhost in dic.values():
-                        print '-----: ', subhost.getName(), subhost.getComponent()
+                        print '-----: ', host.getAddress(), subhost.getName(), subhost.getComponent()
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
@@ -130,6 +131,35 @@ class Stack(object):
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(inst.args)
 
+    def printServiceState(self):
+        try:
+            serviceDic = self.updateServicesState()
+            for component in serviceDic.keys():
+                print component
+                stateDic  = serviceDic[component] 
+                for v in stateDic.keys():
+                    print '\t\t', v, ' : ', stateDic[v]
+
+        except Exception as inst:
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(inst.args)
+
+    def printHostState(self):
+        try:
+            for host in self.hosts.values():
+               if len(host.getHostDic()) != 0:
+                   for h in host.getHostDic().values():
+                       print h.getName(), h.getState()
+ 
+
+        except Exception as inst:
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(inst.args)
+
+
+
     def getRandomHost(self):
         try:
             hostList = self.getHostList()
@@ -147,29 +177,33 @@ class Stack(object):
     def updateHostState(self):
         try:
             for host in self.hosts.values():
-                if not host.getComponent():
+                if len(host.getHostDic()) != 0:
+                    print host.getAddress()
                     stateList = self.getContainerStateList(host.getAddress())
-                    for line in stateList:
-                        lineSplit = line.split()
-                        self.hosts[host.getName()].getHostDic()[lineSplit[0]].setState(lineSplit[1])
+                    print "stateList: ", stateList
+                    if len(stateList) > 2:
+                        for line in stateList[2:]:
+                            lineSplit = line.split()
+                            self.hosts[host.getName()].getHostDic()[lineSplit[0]].setState(lineSplit[1])
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
-            raise
 
     def getContainerStateList(self, address):
         try:
-            lxcCommand = "/usr/bin/lxc-ls -f | awk '{logger.error($1, $2}'"
+            lxcCommand = "/usr/bin/lxc-ls -f | awk '{print $1, $2}'"
             res = self.paramikoWrap(address, lxcCommand)
-            return res[2:]
+            print 'res : ', res
+            
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
-            raise
+        finally:
+            return []
 
     def generateHostList(self):
         try:
@@ -195,7 +229,7 @@ class Stack(object):
         try:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(address)
+            ssh.connect(address, timeout=3)
             stdin, stdout, stderr = ssh.exec_command(command)
             resList = []
             for line in stdout.readlines():
@@ -204,6 +238,9 @@ class Stack(object):
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error(type(inst))
+            logger.error(inst.args)
+        finally:
             return []
 
     def createChaos(self, typ='service', maximumTime=30, minimumTime=20):
@@ -279,7 +316,6 @@ class Stack(object):
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
-            print(inst)
             sys.exit(0)
 
     def generateServiceList(self, serviceDic):
@@ -299,7 +335,6 @@ class Stack(object):
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
-            print(inst)
             sys.exit(0)
 
     def checkListState(self, stateList):
@@ -407,14 +442,8 @@ def doJob(jobList):
         sys.exit(0)
     except Exception as inst:
         jobList[3] = 'no response'
-<<<<<<< HEAD
         logger.error("dojob error")
         logger.error(type(inst))
         logger.error(inst.args)
-=======
-        logger.info("dojob error")
-        logger.info(type(inst))
-        logger.info(inst.args)
     finally:
->>>>>>> 74d6f03701e311023080e8bce37cc9b29f71f72a
         return jobList

@@ -5,6 +5,7 @@ from dataContract.serviceName import ServiceName
 from dataContract.serviceStatus import ServiceStatus
 from dataContract.containerType import ContainerType
 from dataContract.stack import Stack
+from dataContract.logLevel import LogLevel 
 from log import logging
 from utility import Utility
 import time
@@ -20,17 +21,19 @@ if __name__ == '__main__':
 
     logger = logging.getLogger()
 
-    #set log level:
+    #set log level(default DEBUG):
     #critical > error > warning > info > debug
     if len(sys.argv) > 1:
         level_name = sys.argv[1]
-        level = LEVELS.get(level_name, logging.DEBUG)
+        level = LogLevel.LEVELS.get(level_name, logging.DEBUG)
         logger.setLevel(level)
 
     infoParser = InfoParser()
     stack = infoParser.getStackInstance()
     stack.printStack()
     stack.updateServicesState()
+    stack.printServiceState()
 
     #stack.updateHostState()
-    stack.createChaos()
+    #stack.printHostState()
+    #stack.createChaos()
