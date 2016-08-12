@@ -7,7 +7,6 @@ from dataContract.containerType import ContainerType
 from dataContract.stack import Stack
 from dataContract.logLevel import LogLevel 
 from log import logging
-from utility import Utility
 import time
 import random
 import sys
@@ -30,10 +29,12 @@ if __name__ == '__main__':
 
     infoParser = InfoParser()
     stack = infoParser.getStackInstance()
-    stack.printStack()
-    stack.updateServicesState()
-    stack.printServiceState()
+    #stack.printStack()
+    #stack.getHostList()
+    
+#    stack.updateServicesState()
+    #stack.printServiceState()
 
-    #stack.updateHostState()
-    #stack.printHostState()
+    stack.updateHostState()
+    stack.printHostState()
     #stack.createChaos()

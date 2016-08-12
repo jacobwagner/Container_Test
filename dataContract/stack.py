@@ -1,8 +1,3 @@
-from dataContract.host import Host
-from dataContract.singleton import Singleton
-from multiprocessing import Pool
-from dataContract.servicesParser import ServicesParser
-from multiprocessing import pool
 import random
 import paramiko
 import time
@@ -11,17 +6,24 @@ import sys
 import logging
 import inspect
 
-logger = logging.getLogger('chaos')
+from dataContract.host import Host
+from dataContract.singleton import Singleton
+from multiprocessing import Pool
+from dataContract.servicesParser import ServicesParser
+from multiprocessing import pool
+
+logger = logging.getLogger('chaos.stack')
 
 @Singleton
 class Stack(object):
+
     def __init__(self):
         self.hosts = {}
 
-    def addHost(self, name, component, address, host, ssh_key=None):
+    def addHost(self, name, host, address, component, ssh_key=None):
         try:
             if not name or not host:
-                logger.error("addHost empty name")
+                logger.error("addHost empty name or host")
                 return False
             if name == host:
                 if name not in self.hosts:
@@ -30,29 +32,19 @@ class Stack(object):
                     self.hosts[name].setAddress(address)
                     self.hosts[name].setComponent(component)
                     self.hosts[name].setSshKey(ssh_key)
-                return True
-            # host has component
-#            elif component and name == host:
-#                if name not in self.hosts:
-#                    self.hosts[name] = Host(name, host, address, component, ssh_key)
-#                else:
-#                    self.hosts[name].setAddress(address)
-#                    self.hosts[name].setComponent(component)
-#                    self.hosts[name].setSshKey(ssh_key)
-#                return True
             else:
                 if host in self.hosts:
                     self.hosts[host].addToHostDic(Host(name, host, address, component, ssh_key))
                 else:
                     self.hosts[host] = Host(host)
                     self.hosts[host].addToHostDic(Host(name, host, address, component, ssh_key))
-                return True
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
             return False 
+        return True
 
     def getRandomInt(self, num):
         if num > 0:
@@ -63,11 +55,11 @@ class Stack(object):
     def printStack(self):
         try:
             for host in self.hosts.values():
-                print host.getAddress(), host.getName(), host.getComponent()
+                print '%-10s  %-30s  %-35s' % (host.getAddress(), host.getComponent(), host.getName())
                 dic = host.getHostDic()
                 if len(dic.values()) != 0:
                     for subhost in dic.values():
-                        print '-----: ', host.getAddress(), subhost.getName(), subhost.getComponent()
+                        print '----------%-30s  %-30s  %-55s' % (subhost.getAddress(), subhost.getComponent(), subhost.getName())
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
@@ -85,10 +77,12 @@ class Stack(object):
                             hostList.append(i)
                 else:
                     hostList.append(host)
+            for i in hostList:
+                print '%-10s  %-30s  %-35s' % (i.getAddress(), i.getComponent(), i.getName())
             return hostList
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
             return []
@@ -104,12 +98,11 @@ class Stack(object):
                     if service != "":
                         jobList.append([host.getAddress(), service, ' status', 'unknown', host.getComponent()])
 
+            #jobList : [ipaddress, service_name, command : status, service status(default unknown), component]
             it = pool.imap(doJob, jobList)
 
-            count = 0
             serviceStateDic = {}
             for item in it:
-                count += 1
                 if item[4] not in serviceStateDic:
                     serviceStateDic[item[4]] = { item[0] : item[3] }
                 else:
@@ -138,7 +131,7 @@ class Stack(object):
                 print component
                 stateDic  = serviceDic[component] 
                 for v in stateDic.keys():
-                    print '\t\t', v, ' : ', stateDic[v]
+                    print '\t\t%-20s %-20s' % (v, stateDic[v])
 
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
@@ -148,17 +141,15 @@ class Stack(object):
     def printHostState(self):
         try:
             for host in self.hosts.values():
-               if len(host.getHostDic()) != 0:
-                   for h in host.getHostDic().values():
-                       print h.getName(), h.getState()
- 
+                if len(host.getHostDic()) != 0:
+                    print '%-20s' % host.getAddress()
+                    for h in host.getHostDic().values():
+                        print '\t\t%-10s %-40s' % (h.getState(), h.getName())
 
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(inst.args)
-
-
 
     def getRandomHost(self):
         try:
@@ -178,16 +169,14 @@ class Stack(object):
         try:
             for host in self.hosts.values():
                 if len(host.getHostDic()) != 0:
-                    print host.getAddress()
                     stateList = self.getContainerStateList(host.getAddress())
-                    print "stateList: ", stateList
                     if len(stateList) > 2:
                         for line in stateList[2:]:
                             lineSplit = line.split()
                             self.hosts[host.getName()].getHostDic()[lineSplit[0]].setState(lineSplit[1])
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
 
@@ -195,14 +184,13 @@ class Stack(object):
         try:
             lxcCommand = "/usr/bin/lxc-ls -f | awk '{print $1, $2}'"
             res = self.paramikoWrap(address, lxcCommand)
-            print 'res : ', res
+            return res
             
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
-        finally:
             return []
 
     def generateHostList(self):
@@ -240,7 +228,6 @@ class Stack(object):
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
-        finally:
             return []
 
     def createChaos(self, typ='service', maximumTime=30, minimumTime=20):
@@ -306,7 +293,6 @@ class Stack(object):
                     if service != "":
                         jobList.append([address, service, cmd, 'unknown', randomComponent])
                 logger.error(jobList)
-                #it = pool.imap(doJob, jobList)
   
         except KeyboardInterrupt:
             print("Stopping chaos...")
