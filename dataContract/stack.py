@@ -162,7 +162,6 @@ class Stack(object):
             logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
-        finally:
             return None
 
     def updateHostState(self):
