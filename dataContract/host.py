@@ -1,11 +1,8 @@
+from log import logging
+
+logger = logging.getLogger()
+
 class Host(object):
-    __name = ''
-    __host = ''
-    __address = ''
-    __component = ''
-    __hostDic = {}
-    __ssh_key = ''
-    __state = ''
 
     def __init__(self, name, host=None, address=None, component=None, ssh_key=None, state='UNKNOWN'):
         self.__name = name
@@ -58,12 +55,13 @@ class Host(object):
     def addToHostDic(self, host):
         try:
             if host.getName() in self.__hostDic:
-                print 'addNodeToDic error'
+                logger.error(str(inspect.stack()[0][3]) + ' host exist')
                 raise
             else:
                 self.__hostDic[host.getName()] = host
         except:
-            print 'addNodeToDic error'
+            logger.error(str(inspect.stack()[0][3]))
+            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             raise
 
     def getHostDic(self):
