@@ -6,9 +6,6 @@ import unittest
 import mock
 import random
 
-#@mock.patch.object(Stack.Instance(), 'addHost')
-
-
 class MyTestCase(unittest.TestCase):
     def test_addHost_name_empty(self):
         #arrange
@@ -88,38 +85,6 @@ class MyTestCase(unittest.TestCase):
         #assert
         assert res == []
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def test_paramikoWrap(self):
         print 'test_paramikoWrap pass'
         #arrange
@@ -130,11 +95,6 @@ class MyTestCase(unittest.TestCase):
     
         #assert
         assert res == [1]
-    
-
-    
 
 if __name__ == '__main__':
     unittest.main()
-    #MyTestCase('test_paramikoWrap').run()
-

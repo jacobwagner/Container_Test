@@ -1,5 +1,4 @@
 from dataContract.infoParser import InfoParser
-from cmd.lxcCommandWrap import LXC
 from dataContract.containerState import ContainerState
 from dataContract.serviceName import ServiceName
 from dataContract.serviceStatus import ServiceStatus
@@ -32,7 +31,7 @@ if __name__ == '__main__':
     #stack.printStack()
     #stack.getHostList()
     
-#    stack.updateServicesState()
+    #stack.updateServicesState()
     #stack.printServiceState()
 
     stack.updateHostState()
