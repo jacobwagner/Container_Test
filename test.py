@@ -1,100 +1,98 @@
-from mock import patch
 from dataContract.stack import Stack
 from dataContract.util import Util
-from unittest import TestCase
-import unittest
 import mock
+import unittest
 import random
+
 
 class MyTestCase(unittest.TestCase):
     def test_addHost_name_empty(self):
-        #arrange
+        # arrange
         s = Stack.Instance()
-    
-        #act
+
+        # act
         res = s.addHost(Util.emptyString, Util.emptyString, Util.emptyString, Util.emptyString)
-    
-        #assert
-        assert res == False 
-    
+
+        # assert
+        self.assertFalse(res)
+
     def test_addHost_component_null_name_equals_host(self):
-        #arrange
+        # arrange
         s = Stack.Instance()
-    
-        #act
+
+        # act
         res = s.addHost(Util.randomString, None, Util.emptyString, Util.randomString)
-    
-        #assert
-        assert res == True 
-    
+
+        # assert
+        self.assertTrue(res)
+
     def test_addHost_component_not_null_name_not_equals_host(self):
-        #arrange
+        # arrange
         s = Stack.Instance()
-    
-        #act
+
+        # act
         res = s.addHost(Util.randomString, Util.randomString, Util.emptyString, Util.emptyString)
-    
-        #assert
-        assert res == True 
-    
+
+        # assert
+        self.assertTrue(res)
+
     def test_addHost_component_null_name_not_equals_host(self):
-        #arrange
+        # arrange
         s = Stack.Instance()
-    
-        #act
+
+        # act
         res = s.addHost(Util.randomString, None, Util.emptyString, Util.emptyString)
-    
-        #assert
-        assert res == False 
-       
-    
+
+        # assert
+        self.assertFalse(res)
+
     @mock.patch.object(Stack.Instance(), 'getRandomInt')
     def test_getRandomInt(self, getRandomInt_mock):
-        #arrange
+        # arrange
         s = Stack.Instance()
         getRandomInt_mock.return_value = 1
-        
-        #act
+
+        # act
         res = s.getRandomInt(random.random())
-    
-        #assert
-        assert res == 1
-    
+
+        # assert
+        self.assertEqual(res, 1)
 
     def test_getHostList(self):
-        #arrange
+        # arrange
         s = Stack.Instance()
         s.hosts = {}
-        
-        #act
+
+        # act
         res = s.getHostList()
         print 'res: ', res
-    
-        #assert
-        assert res == []
+
+        # assert
+        self.assertEqual(res, [])
 
     def test_updateServicesState(self):
-         #arrange
+        # arrange
         s = Stack.Instance()
         s.hosts = {}
-        
-        #act
+
+        # act
         res = s.getHostList()
         print 'res: ', res
-    
-        #assert
-        assert res == []
+
+        # assert
+        self.assertEqual(res, [])
 
     def test_paramikoWrap(self):
         print 'test_paramikoWrap pass'
-        #arrange
+        # arrange
         s = Stack.Instance()
-        
-        #act
+
+        # act
         res = s.paramikoWrap(Util.randomString, Util.randomString)
-    
-        #assert
-        assert res == [1]
+
+        # assert
+        self.assertEqual(res, [1])
+
 
 if __name__ == '__main__':
     unittest.main()

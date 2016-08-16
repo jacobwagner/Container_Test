@@ -14,9 +14,9 @@ from multiprocessing import pool
 
 logger = logging.getLogger('chaos.stack')
 
+
 @Singleton
 class Stack(object):
-
     def __init__(self):
         self.hosts = {}
 
@@ -40,10 +40,10 @@ class Stack(object):
                     self.hosts[host].addToHostDic(Host(name, host, address, component, ssh_key))
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
-            return False 
+            return False
         return True
 
     def getRandomInt(self, num):
@@ -59,10 +59,11 @@ class Stack(object):
                 dic = host.getHostDic()
                 if len(dic.values()) != 0:
                     for subhost in dic.values():
-                        print '----------%-30s  %-30s  %-55s' % (subhost.getAddress(), subhost.getComponent(), subhost.getName())
+                        print '----------%-30s  %-30s  %-55s' % (
+                        subhost.getAddress(), subhost.getComponent(), subhost.getName())
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
 
@@ -82,7 +83,7 @@ class Stack(object):
             return hostList
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.error('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
             return []
@@ -98,13 +99,13 @@ class Stack(object):
                     if service != "":
                         jobList.append([host.getAddress(), service, ' status', 'unknown', host.getComponent()])
 
-            #jobList : [ipaddress, service_name, command : status, service status(default unknown), component]
+            # jobList : [ipaddress, service_name, command : status, service status(default unknown), component]
             it = pool.imap(doJob, jobList)
 
             serviceStateDic = {}
             for item in it:
                 if item[4] not in serviceStateDic:
-                    serviceStateDic[item[4]] = { item[0] : item[3] }
+                    serviceStateDic[item[4]] = {item[0]: item[3]}
                 else:
                     if item[0] in serviceStateDic[item[4]]:
                         if item[3] == 'stop':
@@ -113,7 +114,7 @@ class Stack(object):
                             serviceStateDic[item[4]][item[0]] = 'unknown'
                     else:
                         serviceStateDic[item[4]][item[0]] = item[3]
-    
+
             return serviceStateDic
 
         except KeyboardInterrupt:
@@ -121,7 +122,7 @@ class Stack(object):
             sys.exit(0)
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(inst.args)
 
     def printServiceState(self):
@@ -129,13 +130,13 @@ class Stack(object):
             serviceDic = self.updateServicesState()
             for component in serviceDic.keys():
                 print component
-                stateDic  = serviceDic[component] 
+                stateDic = serviceDic[component]
                 for v in stateDic.keys():
                     print '\t\t%-20s %-20s' % (v, stateDic[v])
 
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(inst.args)
 
     def printHostState(self):
@@ -148,7 +149,7 @@ class Stack(object):
 
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(inst.args)
 
     def getRandomHost(self):
@@ -159,7 +160,7 @@ class Stack(object):
                 return hostList[index]
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
             return None
@@ -175,7 +176,7 @@ class Stack(object):
                             self.hosts[host.getName()].getHostDic()[lineSplit[0]].setState(lineSplit[1])
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.error('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.error('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
 
@@ -184,10 +185,10 @@ class Stack(object):
             lxcCommand = "/usr/bin/lxc-ls -f | awk '{print $1, $2}'"
             res = self.paramikoWrap(address, lxcCommand)
             return res
-            
+
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
             return []
@@ -207,7 +208,7 @@ class Stack(object):
             return runningList, stopList
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
             raise
@@ -224,7 +225,7 @@ class Stack(object):
             return resList
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
             return []
@@ -237,7 +238,7 @@ class Stack(object):
                 self.serviceChaos(maximumTime, minimumTime)
         except KeyboardInterrupt:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             print("Stopping chaos...")
             sys.exit(0)
 
@@ -247,7 +248,7 @@ class Stack(object):
                 return self.hosts[hostname].getAddress()
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
 
@@ -292,13 +293,13 @@ class Stack(object):
                     if service != "":
                         jobList.append([address, service, cmd, 'unknown', randomComponent])
                 logger.error(jobList)
-  
+
         except KeyboardInterrupt:
             print("Stopping chaos...")
             sys.exit(0)
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
             sys.exit(0)
@@ -317,7 +318,7 @@ class Stack(object):
 
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
             sys.exit(0)
@@ -335,7 +336,7 @@ class Stack(object):
 
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
             sys.exit(0)
@@ -344,13 +345,16 @@ class Stack(object):
         try:
             while 1:
                 runningList, stopList = self.generateHostList()
-                logger.error('----------------------------------------------------------------------------------------------------------------------------------------------------')
+                logger.error(
+                    '----------------------------------------------------------------------------------------------------------------------------------------------------')
                 for i in runningList:
                     logger.error(i.getState() + ' \t ' + i.getName())
-                logger.error('----------------------------------------------------------------------------------------------------------------------------------------------------')
+                logger.error(
+                    '----------------------------------------------------------------------------------------------------------------------------------------------------')
                 for i in stopList:
                     logger.error(i.getState() + ' \t ' + i.getName())
-                logger.error('----------------------------------------------------------------------------------------------------------------------------------------------------')
+                logger.error(
+                    '----------------------------------------------------------------------------------------------------------------------------------------------------')
                 ran = random.randint(0, 1)
                 t = self.getRandomInt(maximumTime - minimumTime) + minimumTime
                 if ran == 1:
@@ -375,14 +379,15 @@ class Stack(object):
                     # self.paramikoWrap(address, command)
                     else:
                         print("Doing nothing for the next %s seconds" % str(t))
-                    logger.error('----------------------------------------------------------------------------------------------------------------------------------------------------')
+                    logger.error(
+                        '----------------------------------------------------------------------------------------------------------------------------------------------------')
                 self.countDown(t)
         except KeyboardInterrupt:
             print("Stoping chaos...")
             sys.exit(0)
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             logger.error(type(inst))
             logger.error(inst.args)
             logger.error(inst)

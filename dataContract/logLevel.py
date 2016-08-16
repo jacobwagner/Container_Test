@@ -1,7 +1,7 @@
 import logging
 
-class LogLevel:
 
+class LogLevel:
     LEVELS = {'debug': logging.DEBUG,
               'info': logging.INFO,
               'warning': logging.WARNING,

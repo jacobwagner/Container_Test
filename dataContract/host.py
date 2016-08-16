@@ -1,9 +1,10 @@
 from log import logging
+import inspect
 
 logger = logging.getLogger()
 
-class Host(object):
 
+class Host(object):
     def __init__(self, name, host=None, address=None, component=None, ssh_key=None, state='UNKNOWN'):
         self.__name = name
         self.__host = host
@@ -61,7 +62,7 @@ class Host(object):
                 self.__hostDic[host.getName()] = host
         except:
             logger.error(str(inspect.stack()[0][3]))
-            logger.info('calling func : '+str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
+            logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
             raise
 
     def getHostDic(self):
