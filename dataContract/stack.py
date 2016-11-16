@@ -72,12 +72,12 @@ class Stack(object):
         try:
             hostList = []
             for host in self.hosts.values():
+                #if the host also has component it should add to list
                 if not host.getComponent():
-                    if len(host.getHostDic()) != 0:
-                        for i in host.getHostDic().values():
-                            hostList.append(i)
-                else:
                     hostList.append(host)
+                if len(host.getHostDic()) != 0:
+                    for i in host.getHostDic().values():
+                        hostList.append(i)
             for i in hostList:
                 print '%-10s  %-30s  %-35s' % (i.getAddress(), i.getComponent(), i.getName())
             return hostList
@@ -129,7 +129,6 @@ class Stack(object):
         try:
             serviceDic = self.updateServicesState()
             for component in serviceDic.keys():
-                print component
                 stateDic = serviceDic[component]
                 for v in stateDic.keys():
                     print '\t\t%-20s %-20s' % (v, stateDic[v])
@@ -199,12 +198,12 @@ class Stack(object):
             runningList = []
             self.updateHostState()
             for host in self.hosts.values():
-                if not host.getComponent():
-                    for node in host.getHostDic().values():
-                        if node.getState() == "RUNNING":
-                            runningList.append(node)
-                        elif node.getState() == "STOPPED":
-                            stopList.append(node)
+            #    if not host.getComponent():
+               for node in host.getHostDic().values():
+                   if node.getState() == "RUNNING":
+                       runningList.append(node)
+                   elif node.getState() == "STOPPED":
+                       stopList.append(node)
             return runningList, stopList
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
@@ -230,8 +229,9 @@ class Stack(object):
             logger.error(inst.args)
             return []
 
-    def createChaos(self, typ='service', maximumTime=30, minimumTime=20):
+    def createChaos(self, typ, maximumTime=30, minimumTime=20):
         try:
+            print "Start with", typ
             if typ == 'container':
                 self.containerChaos(maximumTime, minimumTime)
             elif typ == 'service':
@@ -255,7 +255,7 @@ class Stack(object):
     def serviceChaos(self, maximumTime, minimumTime):
         try:
             dic = ServicesParser.getServiceDic()
-            pool = Pool(processes=2)
+            pool = Pool(processes=10)
             while 1:
                 t = self.getRandomInt(maximumTime - minimumTime) + minimumTime
                 self.countDown(t)
@@ -263,6 +263,8 @@ class Stack(object):
                 componentList = serviceDic.keys()
 
                 runningList, stopList = self.generateServiceList(serviceDic)
+                print "runningList : ", runningList
+                print "stopList : " , stopList
                 ran = random.randint(0, 1)
                 address = ''
                 randomComponent = ''
@@ -271,28 +273,31 @@ class Stack(object):
                 if ran:
                     index = self.getRandomInt(len(runningList))
                     if index != -1:
-                        cmd = 'stop'
+                        cmd = ' stop'
                         randomComponent = runningList[index]
+                        print("About to stop: " + randomComponent)
                         addressList = serviceDic[randomComponent].keys()
                         address = addressList[self.getRandomInt(len(addressList))]
                     else:
-                        logger.error("Doing nothing")
+                        logger.info("Doing nothing")
                         continue
                 else:
                     index = self.getRandomInt(len(stopList))
                     if index != -1:
-                        cmd = 'start'
+                        cmd = ' start'
                         randomComponent = stopList[index]
+                        print("About to start: " + randomComponent)
                         addressList = serviceDic[randomComponent].keys()
                         address = addressList[self.getRandomInt(len(addressList))]
                     else:
-                        logger.error("Doing nothing")
+                        logger.info("Doing nothing")
                         continue
 
                 for service in dic[randomComponent]:
-                    if service != "":
+                    if service != "" and cmd != '':
                         jobList.append([address, service, cmd, 'unknown', randomComponent])
-                logger.error(jobList)
+                logger.info(jobList)
+                pool.imap(doJob, jobList)
 
         except KeyboardInterrupt:
             print("Stopping chaos...")
@@ -300,7 +305,8 @@ class Stack(object):
         except Exception as inst:
             logger.error(str(inspect.stack()[0][3]))
             logger.info('calling func : ' + str(inspect.stack()[1][3]) + '() from ' + str(inspect.stack()[1][1]))
-            logger.error(type(inst))
+            ervicesState
+
             logger.error(inst.args)
             sys.exit(0)
 
@@ -345,16 +351,6 @@ class Stack(object):
         try:
             while 1:
                 runningList, stopList = self.generateHostList()
-                logger.error(
-                    '----------------------------------------------------------------------------------------------------------------------------------------------------')
-                for i in runningList:
-                    logger.error(i.getState() + ' \t ' + i.getName())
-                logger.error(
-                    '----------------------------------------------------------------------------------------------------------------------------------------------------')
-                for i in stopList:
-                    logger.error(i.getState() + ' \t ' + i.getName())
-                logger.error(
-                    '----------------------------------------------------------------------------------------------------------------------------------------------------')
                 ran = random.randint(0, 1)
                 t = self.getRandomInt(maximumTime - minimumTime) + minimumTime
                 if ran == 1:
@@ -366,7 +362,7 @@ class Stack(object):
                         print("About to stop: " + name)
                         command = 'lxc-stop -n %s' % name
                         address = self.getHostAddress(runningList[index].getHost())
-                    # self.paramikoWrap(address, command)
+                        self.paramikoWrap(address, command)
                     else:
                         print("Doing nothing for the next %s seconds" % str(t))
                 else:
@@ -376,7 +372,7 @@ class Stack(object):
                         print("About to start: " + name)
                         command = 'lxc-start -d -n %s' % name
                         address = self.getHostAddress(stopList[index].getHost())
-                    # self.paramikoWrap(address, command)
+                        self.paramikoWrap(address, command)
                     else:
                         print("Doing nothing for the next %s seconds" % str(t))
                     logger.error(
@@ -411,14 +407,17 @@ def doJob(jobList):
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(jobList[0])
-            stdin, stdout, stderr = ssh.exec_command('service ' + jobList[1] + jobList[2])
+            cmd = 'service ' + jobList[1] + jobList[2]
+            stdin, stdout, stderr = ssh.exec_command(cmd)
             resList = []
             for line in stdout.readlines():
                 resList.append(line.encode('ascii', 'ignore'))
-            if 'running' in str(resList):
-                jobList[3] = 'running'
-            elif 'stop' in str(resList):
+            if 'not running' in str(resList):
                 jobList[3] = 'stop'
+            elif 'stop' in str(resList) :
+                jobList[3] = 'stop'
+            elif 'running' in str(resList):
+                jobList[3] = 'running'
             else:
                 jobList[3] = 'unknown'
     except paramiko.BadHostKeyException, e:
