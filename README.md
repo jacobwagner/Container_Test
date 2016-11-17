@@ -2,10 +2,12 @@
 
 # Installation
 
+```shell
 - cd /opt && git clone https://github.com/hakusama1024/Container_Test.git
 - cd Container_Test
 - pip install --upgrade pip
 - pip install -r requirements.txt
+```
 
 # Execution
 
@@ -30,7 +32,7 @@ after get a random node it will create joblist for start/stop the service in the
 
 # Usage 
 
-'''
+```shell
 usage: main.py [-h] [--act {container,service}]
                [--log {critical,error,warning,debug,info,notest}] [--min MIN]
                [--max MAX]
@@ -44,4 +46,4 @@ optional arguments:
                         Usage for log level, default=debug
   --min MIN             Usage for min sec, should be > 30 sec
   --max MAX             Usage for max sec, should be > 50 sec
-'''
+```
