@@ -21,14 +21,29 @@ infoParser.py : provide a sample parser for inventory which return a instance of
 serviceParser.py : return a serviceDic which contains all the services. you could add service to services.json.
 
 in stack.py it provide container test and service test. 
-    container test will first update container info and generate two lists for running containers and stoped containers. 
-    then it will random choose one container to start or stop. 
 
-    service test first will get servicedic, then update service state. also service test needs to generate running list and stoped list. 
-    after get a random node it will create joblist for start/stop the service in the node. 
+container test will first update container info and generate two lists for running containers and stoped containers. 
+then it will random choose one container to start or stop. 
+
+service test first will get servicedic, then update service state. also service test needs to generate running list and stoped list. 
+after get a random node it will create joblist for start/stop the service in the node. 
 
 # Usage 
 
-Usage : python main.py [container | service] [loglevel]
+usage: main.py [-h] [--act {container,service}]
+               [--log {critical,error,warning,debug,info,notest}] [--min MIN]
+               [--max MAX]
+
+Process Chaos creation.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --act {container,service}
+                        Usage for act on container/service level,
+                        default=container
+  --log {critical,error,warning,debug,info,notest}
+                        Usage for log level, default=debug
+  --min MIN             Usage for min sec, should be > 30 sec
+  --max MAX             Usage for max sec, should be > 50 sec
 
 

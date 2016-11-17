@@ -229,8 +229,11 @@ class Stack(object):
             logger.error(inst.args)
             return []
 
-    def createChaos(self, typ, maximumTime=30, minimumTime=20):
+    def createChaos(self, typ, minimumTime, maximumTime):
         try:
+            if minimumTime < 30 : minimumTime = 30
+            if maximumTime < 50 : maximumTime = 50
+            if minimumTime > maximumTime : minimumTime, maximumTime = maximumTime, minimumTime
             print "Start with", typ
             if typ == 'container':
                 self.containerChaos(maximumTime, minimumTime)
@@ -375,8 +378,6 @@ class Stack(object):
                         self.paramikoWrap(address, command)
                     else:
                         print("Doing nothing for the next %s seconds" % str(t))
-                    logger.error(
-                        '----------------------------------------------------------------------------------------------------------------------------------------------------')
                 self.countDown(t)
         except KeyboardInterrupt:
             print("Stoping chaos...")
