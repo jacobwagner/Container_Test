@@ -14,7 +14,6 @@ from multiprocessing import pool
 
 logger = logging.getLogger('chaos.stack')
 
-
 @Singleton
 class Stack(object):
     def __init__(self):
@@ -266,8 +265,6 @@ class Stack(object):
                 componentList = serviceDic.keys()
 
                 runningList, stopList = self.generateServiceList(serviceDic)
-                print "runningList : ", runningList
-                print "stopList : " , stopList
                 ran = random.randint(0, 1)
                 address = ''
                 randomComponent = ''
