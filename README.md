@@ -30,11 +30,10 @@ after get a random node it will create joblist for start/stop the service in the
 
 # Usage 
 
+'''
 usage: main.py [-h] [--act {container,service}]
                [--log {critical,error,warning,debug,info,notest}] [--min MIN]
                [--max MAX]
-
-Process Chaos creation.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -45,5 +44,4 @@ optional arguments:
                         Usage for log level, default=debug
   --min MIN             Usage for min sec, should be > 30 sec
   --max MAX             Usage for max sec, should be > 50 sec
-
-
+'''
